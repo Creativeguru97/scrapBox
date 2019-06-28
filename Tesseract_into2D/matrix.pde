@@ -7,6 +7,14 @@ float[][] vec4ToMatrix(P4Vector v){
   return m;
 }
 
+float[][] vec3ToMatrix(PVector v){
+  float[][] m = new float[3][1];
+  m[0][0] = v.x;
+  m[1][0] = v.y;
+  m[2][0] = v.z;
+  return m;
+}
+
 PVector matrixToVec(float [][] m){
   PVector v = new PVector();
   v.x = m[0][0];
@@ -38,6 +46,11 @@ void logMatrix(float[][] m){
     println();
   }
   println();
+}
+
+PVector matmul(float[][]a, PVector b){
+  float[][] m = vec3ToMatrix(b);
+  return matrixToVec(matmul(a, m));
 }
 
 PVector matmul(float[][]a, P4Vector b){

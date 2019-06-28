@@ -16,11 +16,6 @@ PVector matrixToVec(float [][] m){
   return v;
 };
 
-//float [][] projection = {
-//  {1, 0, 0}, 
-//  {0, 1, 0}
-//};
-
 void logMatrix(float[][] m){
   int cols = m[0].length; 
   int rows = m.length;
