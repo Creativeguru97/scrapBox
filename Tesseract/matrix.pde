@@ -3,24 +3,26 @@ float[][] vecToMatrix(P4Vector v){
   m[0][0] = v.x;
   m[1][0] = v.y;
   m[2][0] = v.z;
-  m[3][0] = v.z;
+  m[3][0] = v.w;
   return m;
-};
+}
 
 PVector matrixToVec(float [][] m){
   PVector v = new PVector();
   v.x = m[0][0];
   v.y = m[1][0];
-  if(m.length > 2){
-    v.z = m[2][0];
-  }
+  v.z = m[2][0];
   return v;
-};
+}
 
-//float [][] projection = {
-//  {1, 0, 0}, 
-//  {0, 1, 0}
-//};
+P4Vector matrixToVec4(float [][] m){
+  P4Vector v = new P4Vector(0, 0, 0, 0);
+  v.x = m[0][0];
+  v.y = m[1][0];
+  v.z = m[2][0];
+  v.w = m[3][0];
+  return v;
+}
 
 void logMatrix(float[][] m){
   int cols = m[0].length; 
@@ -34,7 +36,18 @@ void logMatrix(float[][] m){
     println();
   }
   println();
-};
+}
+
+
+PVector matmul(float[][]a, P4Vector b){
+  float[][] m = vecToMatrix(b);
+  return matrixToVec(matmul(a, m));
+}
+
+P4Vector matmul(float[][]a, P4Vector b, boolean dim4){
+  float[][] m = vecToMatrix(b);
+  return matrixToVec4(matmul(a, m));
+}
 
 float [][] matmul(float[][]a, float[][]b){
   int colsA = a[0].length; 
@@ -46,7 +59,7 @@ float [][] matmul(float[][]a, float[][]b){
     println("Columns of A must match rows of B");
     return null;
   }
-  float [][] result = new float [rowsA][colsB];
+  float result[][] = new float [rowsA][colsB];
     for (int i = 0; i < rowsA; i++){
       for (int j = 0; j < colsB; j++){
         //Dot product pf value in col
@@ -58,22 +71,4 @@ float [][] matmul(float[][]a, float[][]b){
       }
     }
     return result;
-};
-
-
-
-float[][] matmul(float[][]a, P4Vector b){
-  float[][] m = vecToMatrix(b);
-  return matmul(a, m);
-};
-
-
-//More simply...
-PVector MatrixOperation(float[][]a, P4Vector b){
-  float[][] m = vecToMatrix(b);
-  //logMatrix(a);
-  //logMatrix(m);
-  float[][] result =  matmul(a, m);
-  //logMatrix(result);
-  return matrixToVec(result);
-};
+}
