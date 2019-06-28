@@ -1,7 +1,7 @@
 float angle = 0;
 
 P4Vector[] points = new P4Vector[16];
-
+PVector[] line = new PVector[16];
 
 void setup(){
   size(600, 400, P3D);
@@ -28,18 +28,11 @@ void draw(){
   background(0);
   translate(width/2, height/2);
   rotateX(-PI/2);
-  //axis();
-
+  //displayAxis();
+  strokeWeight(8);
   
-  PVector[] line = new PVector[16];
- 
-  //for(P4Vector v: points){
   for(int i = 0; i < points.length; i++){
     P4Vector v = points[i];
-    
-    stroke(255);
-    strokeWeight(8);
-    noFill(); 
     
     P4Vector rotated = matmul(rotation("XY"), v, true);
     rotated = matmul(rotation("ZW"), rotated, true);
@@ -56,35 +49,13 @@ void draw(){
     
     PVector projected3D = matmul(projection, rotated);
     projected3D.mult(2);//For zoom or shrink it
-    line[i] = projected3D;
     point(projected3D.x, projected3D.y, projected3D.z);
+    line[i] = projected3D;
+    //fill(0,255,0);
+    //text(i, projected3D.x, projected3D.y, projected3D.z);
   }
   
-  //----- Draw 3D line -----
-  for(int i = 0; i < points.length; i++){
-    if(i == 3){
-      connect(3, 0, line);
-    }else if(i == 7){
-      connect(7, 4, line);
-    }else if(i == 11){
-      connect(11, 8, line);
-    }else if(i == 15){
-      connect(15, 12, line);
-    }else{
-      connect(i, i+1, line);
-    }
-
-    if(i < 4){
-       connect(i, i + 4, line);
-    }else if(i >= 8 && i < 12){
-       connect(i, i + 4, line);
-    }
-    
-    if(i < 8){
-      connect(i, i + 8, line);
-    }
-  }
-  //----- Draw 3D line END -----
+  draw3DLine();
   
   angle += 0.01;
 }
@@ -95,17 +66,20 @@ void draw(){
 void connect(int i, int j, PVector[] points){
   PVector a = points[i];
   PVector b = points[j];
+  stroke(255);
+  noFill(); 
   strokeWeight(1);
   line(a.x, a.y, a.z, b.x, b.y, b.z);
 }
 
-void axis(){
+void displayAxis(){
   stroke(255, 0, 0);
   line(0, 0, 0, width/4, 0, 0);
   stroke(0, 255, 0);
   line(0, 0, 0, 0, width/4, 0);
   stroke(0, 0, 255);
   line(0, 0, 0, 0, 0, width/4);
+  stroke(255);
 }
 
 float[][] rotation(String axis){
@@ -172,5 +146,32 @@ float[][] rotation(String axis){
     
   }else{
     return null;
+  }
+}
+
+void draw3DLine(){
+    
+  for(int i = 0; i < points.length; i++){
+    if(i == 3){
+      connect(3, 0, line);
+    }else if(i == 7){
+      connect(7, 4, line);
+    }else if(i == 11){
+      connect(11, 8, line);
+    }else if(i == 15){
+      connect(15, 12, line);
+    }else{
+      connect(i, i+1, line);
+    }
+
+    if(i < 4){
+       connect(i, i + 4, line);
+    }else if(i >= 8 && i < 12){
+       connect(i, i + 4, line);
+    }
+    
+    if(i < 8){
+      connect(i, i + 8, line);
+    }
   }
 }

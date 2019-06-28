@@ -7,6 +7,4 @@ class P4Vector{
     this.z = z;
     this.w = w;
   }
-  
-  
 }
