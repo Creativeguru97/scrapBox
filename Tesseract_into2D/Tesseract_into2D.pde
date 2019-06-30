@@ -26,10 +26,9 @@ void setup(){
 }
 
 void draw(){
-  println(frameRate);
   background(0);
   translate(width/2, height/2);
-  rotateZ(PI/2);
+  //rotateZ(PI/2);
   //rotateY(-PI/2);
   //displayAxis();
 

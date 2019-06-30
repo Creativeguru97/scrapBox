@@ -49,6 +49,7 @@ void draw(){
     
     PVector projected3D = matmul(projection, rotated);
     projected3D.mult(2);//For zoom or shrink it
+    stroke(255);
     point(projected3D.x, projected3D.y, projected3D.z);
     line[i] = projected3D;
     //fill(0,255,0);
@@ -66,6 +67,14 @@ void draw(){
 void connect(int i, int j, PVector[] points){
   PVector a = points[i];
   PVector b = points[j];
+  stroke(255);
+  noFill(); 
+  strokeWeight(1);
+  line(a.x, a.y, a.z, b.x, b.y, b.z);
+}
+void connect(int offset, int i, int j, PVector[] points){
+  PVector a = points[i+offset];
+  PVector b = points[j+offset];
   stroke(255);
   noFill(); 
   strokeWeight(1);
@@ -150,28 +159,43 @@ float[][] rotation(String axis){
 }
 
 void draw3DLine(){
-    
-  for(int i = 0; i < points.length; i++){
-    if(i == 3){
-      connect(3, 0, line);
-    }else if(i == 7){
-      connect(7, 4, line);
-    }else if(i == 11){
-      connect(11, 8, line);
-    }else if(i == 15){
-      connect(15, 12, line);
-    }else{
-      connect(i, i+1, line);
-    }
-
-    if(i < 4){
-       connect(i, i + 4, line);
-    }else if(i >= 8 && i < 12){
-       connect(i, i + 4, line);
-    }
-    
-    if(i < 8){
-      connect(i, i + 8, line);
-    }
+  
+  for(int i = 0; i < 4; i++){
+    connect(0, i, (i+1)%4, line);
+    connect(0, i+4, ((i+1)%4)+4, line);
+    connect(0, i, i+4, line);
   }
+  for(int i = 0; i < 4; i++){
+    connect(8, i, (i+1)%4, line);
+    connect(8, i+4, ((i+1)%4)+4, line);
+    connect(8, i, i+4, line);
+  }
+  for(int i = 0; i < 8; i++){
+    connect(0, i, i + 8, line);
+  }
+  
+  //alternative
+  //for(int i = 0; i < points.length; i++){
+  //  if(i == 3){
+  //    connect(3, 0, line);
+  //  }else if(i == 7){
+  //    connect(7, 4, line);
+  //  }else if(i == 11){
+  //    connect(11, 8, line);
+  //  }else if(i == 15){
+  //    connect(15, 12, line);
+  //  }else{
+  //    connect(i, i+1, line);
+  //  }
+
+  //  if(i < 4){
+  //     connect(i, i + 4, line);
+  //  }else if(i >= 8 && i < 12){
+  //     connect(i, i + 4, line);
+  //  }
+    
+  //  if(i < 8){
+  //    connect(i, i + 8, line);
+  //  }
+  //}
 }
