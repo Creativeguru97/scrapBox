@@ -91,7 +91,7 @@ void draw(){
   //translate(width/2, height/2);
   
   rotateX(-PI/6);//To make axis more seetable
-  //rotateY(-angle/4);
+  rotateY(-angle/4);
   //displayAxis();
   
   colorMode(HSB);
