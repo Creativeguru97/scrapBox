@@ -10,6 +10,7 @@ int edgeCount = 0;
 
 void setup(){
   size(960, 540, P3D);
+  //fullScreen(P3D);
   cam = new PeasyCam(this, 500);
   points[0] = new P5Vector(-50, -50, -50, 50, 50);
   points[1] = new P5Vector(50, -50, -50, 50, 50);
@@ -50,7 +51,8 @@ void setup(){
 
 void draw(){
   background(0);
-  //translate(width/2, height/2);
+  //translate(width/2, height/2); //If you run without Peasy cam
+  
   
   rotateX(-PI/6);//To make axis more seetable
   //rotateY(-angle/4);
@@ -97,6 +99,8 @@ void draw(){
     stroke(255);
     point(projected3D.x, projected3D.y, projected3D.z);
     line[i] = projected3D;
+    
+    //Display indices for debugging
     //fill(0,255,0);
     //text(i, projected3D.x, projected3D.y, projected3D.z);
   }
@@ -300,6 +304,7 @@ void draw3DLine(){//There must be much more sophisticated way
     connect(16, i, i + 8, line);
   }
     
+  //Alternative
   //for(int i = 0; i < points.length; i++){
     
   //  if(i < 16){

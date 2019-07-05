@@ -9,7 +9,8 @@ PVector[] line = new PVector[64];
 int edgeCount = 0;
 
 void setup(){
-  size(960, 540, P3D);
+  //size(960, 540, P3D);
+  fullScreen(P3D);
   cam = new PeasyCam(this, 500);
   points[0] = new P6Vector(-50, -50, -50, 50, 50, 50);
   points[1] = new P6Vector(50, -50, -50, 50, 50, 50);
@@ -91,8 +92,8 @@ void draw(){
   //translate(width/2, height/2);
   
   rotateX(-PI/6);//To make axis more seetable
-  rotateY(-angle/4);
-  //displayAxis();
+  //rotateY(-angle/4);
+  //displayAxis();//For debugging
   
   colorMode(HSB);
   strokeWeight(8);
@@ -100,13 +101,12 @@ void draw(){
   for(int i = 0; i < points.length; i++){
     P6Vector v = points[i];
     
-
+    //I used rotation o and 6, in the function at last of code
     P6Vector rotated = matmul6D_R(rotation(0), v, true);
     rotated = matmul6D_R(rotation(1), v, true);
     
     //6D to 5D
     float distance6D = 600;
-    //println(v.u);
     float t = 100 / (distance6D - rotated.t);
     
     float [][] projection6D = {
@@ -144,11 +144,13 @@ void draw(){
     };
     
     PVector projected3D = matmul3(projection4D, projected4D);
-    projected3D.mult(96);//For zoom or shrink it
+    projected3D.mult(64);//For zoom or shrink it
     
     stroke(255);
     point(projected3D.x, projected3D.y, projected3D.z);
     line[i] = projected3D;
+    
+    //Display indices for debugging
     //fill(100,255,255);
     //text(i, projected3D.x, projected3D.y, projected3D.z);
   }
@@ -192,6 +194,7 @@ void displayAxis(){
   stroke(255);
 }
 
+//
 float[][] rotation(int cube){
   //http://kennycason.com/posts/2009-01-08-graph4d-rotation4d-project-to-2d.html
   if(cube == 0){
