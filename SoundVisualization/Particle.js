@@ -17,7 +17,6 @@ class Particle{
           x = r * cos(i);
           y = r * sin(i);
           // z = r * cos(i);
-
         }else{
           x = (r + noise(offset)*vol*120) * cos(i);
           y = (r + noise(offset)*vol*120) * sin(i);
@@ -27,7 +26,7 @@ class Particle{
         colorMode(HSB);
         let hue = map(i, 0, 360, 0, 64);
         stroke((hue+310)*noise(offset/3000), 255, 255);
-        strokeWeight(1);
+        strokeWeight(0.5+vol*5);
         line(x/1.05, y/1.05, x, y);
 
         // point(x, y, 0);
