@@ -11,9 +11,10 @@ let particle;
 let rotateAngle = 0.0;
 
 function preload(){
-  song = loadSound("Konac - Away.mp3");
+  // song = loadSound("Konac - Away.mp3");
   // song = loadSound("bensound-popdance.mp3");
   // song = loadSound("bensound-romantic.mp3");
+  song = loadSound("Daniel_Shiffman - This_Dot_(prod._Kristian_Pedersen).wav");
 }
 
 function setup(){
