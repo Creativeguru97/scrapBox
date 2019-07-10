@@ -42,7 +42,7 @@ class Sphere{
 
         //point version
         if(displayMode.value() == "Point"){
-          strokeWeight(4);
+          strokeWeight(3.5);
           point(particle.position.x, particle.position.y, 0);
         }
 
@@ -74,7 +74,7 @@ class Sphere{
           xS2 = this.particles[luckyNumber2].position.x;
           yS2 = this.particles[luckyNumber2].position.y;
           zS2 = this.particles[luckyNumber2].position.z;
-          strokeWeight(12);
+          strokeWeight(11);
           point(xS2, yS2, zS2);
       }
   }
