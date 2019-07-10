@@ -1,8 +1,11 @@
 //I use Chrome since p5.AudioIn is not supported on Safari and iOS.
-let song;
+
 let button;
 let displayMode;
 let buttonDisplay;
+
+let microphone;
+let isListening = false;
 
 let amp;
 const widthX = 600;//Must be power of 2 if I use p5.FFT()
@@ -11,6 +14,8 @@ const w = widthX / resolution;
 let offset = 0.0;
 let sphere;
 let rotateAngle = 0.0;
+let sensitiveness;
+let sensitiveDisplay;
 let offsetSlider, lengthSlider, lineWeightSlider, colorChangeSlider;
 let offsetDisplay, lengthDisplay, lineWeightDisplay, colorChangeDisplay;
 let colorChangeSpeed;
@@ -37,20 +42,27 @@ function setup(){
   createCanvas(widthX, widthX, WEBGL);
   angleMode(DEGREES);
 
-  buttonDisplay = createDiv();
-  buttonDisplay.class("buttonDisplay");
-  button = createButton("play");
-  button.mousePressed(togglePlaying);
 
-  amp = new p5.Amplitude(0.5);
+  microphone = new p5.AudioIn(print("Unknown error occured"));
   // fft = new p5.FFT(0.5, resolution);//For linear
+
 
   // fft = new p5.FFT(0.5, 256);
   sphere = new Sphere();
 
+  buttonDisplay = createDiv();
+  buttonDisplay.class("buttonDisplay");
+  button = createButton("microphone ON");
+  button.mousePressed(togglePlaying);
+
   displayMode = createSelect();
   displayMode.option("Line");
   displayMode.option("Point");
+
+  sensitiveDisplay = createDiv();
+  sensitiveDisplay.class("Display");
+  sensitiveness = createSlider(1, 20, 1, 0.5);//(min, max, default, increment)
+  sensitiveness.class("Slider");
 
   offsetDisplay = createDiv();
   offsetDisplay.class("Display");
@@ -88,12 +100,13 @@ function setup(){
 function draw(){
   background(0);
 
-  let vol = amp.getLevel();
+  let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
 
   sphere.rotation(vol, rotateAngle);
   sphere.show(vol);
 
+  sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
   offsetDisplay.html("Noise offset: " + offsetSlider.value());
   lengthDisplay.html("Line length: " + lengthSlider.value());
   lineWeightDisplay.html("Line thickness: " + lineWeightSlider.value());
@@ -120,11 +133,13 @@ function pointModeVerticalLines(){
 
 
 function togglePlaying(){
-  if(!song.isPlaying()){
-    song.loop();
-    button.html("pause");
-  }else{
-    song.pause();
-    button.html("play");
+  if(isListening == false){
+    microphone.start();
+    button.html("microphone OFF");
+    isListening = true;
+  }else if(isListening == true){
+    microphone.stop();
+    button.html("microphone ON");
+    isListening = false;
   }
 }
