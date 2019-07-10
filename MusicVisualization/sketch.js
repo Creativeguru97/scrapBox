@@ -7,7 +7,6 @@ let buttonDisplay;
 let microphone;
 let isListening = false;
 
-let amp;
 const widthX = 600;//Must be power of 2 if I use p5.FFT()
 const resolution = 64;
 const w = widthX / resolution;
@@ -30,13 +29,6 @@ let doesShowLines = false;
 let headLine1;
 let headLine2;
 
-
-function preload(){
-  // song = loadSound("Konac - Away.mp3");
-  // song = loadSound("bensound-popdance.mp3");
-  // song = loadSound("bensound-romantic.mp3");
-  song = loadSound("Daniel_Shiffman - This_Dot_(prod._Kristian_Pedersen).wav");
-}
 
 function setup(){
   createCanvas(widthX, widthX, WEBGL);
