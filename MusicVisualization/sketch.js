@@ -1,5 +1,5 @@
 //I use Chrome since p5.AudioIn is not supported on Safari and iOS.
-
+let canvas;
 let button;
 let displayMode;
 let buttonDisplay;
@@ -7,7 +7,7 @@ let buttonDisplay;
 let microphone;
 let isListening = false;
 
-const widthX = 600;//Must be power of 2 if I use p5.FFT()
+const widthX = 800;//Must be power of 2 if I use p5.FFT()
 const resolution = 64;
 const w = widthX / resolution;
 let offset = 0.0;
@@ -31,7 +31,8 @@ let headLine2;
 
 
 function setup(){
-  createCanvas(widthX, widthX, WEBGL);
+  canvas = createCanvas(widthX, widthX, WEBGL);
+  canvas.position(400, 0);
   angleMode(DEGREES);
 
 
@@ -50,6 +51,8 @@ function setup(){
   displayMode = createSelect();
   displayMode.option("Line");
   displayMode.option("Point");
+  displayMode.class("Selector");
+
 
   sensitiveDisplay = createDiv();
   sensitiveDisplay.class("Display");
@@ -62,7 +65,7 @@ function setup(){
   offsetSlider.class("Slider");
 
   headLine1 = createP("----- Line mode -----");
-  headLine1.class("headline");
+  headLine1.class("Display");
 
 
   lengthDisplay = createDiv();
@@ -81,16 +84,20 @@ function setup(){
   colorChangeSlider.class("Slider");
 
   headLine2 = createP("----- Point mode -----");
-  headLine2.class("headline");
+  headLine2.class("Display");
 
   flashes = createCheckbox("flashes", false);
   flashes.changed(pointModeFlashes);
+  flashes.class("CheckBox");
+
   verticalLines = createCheckbox("verticalLines", false);
   verticalLines.changed(pointModeVerticalLines);
+  verticalLines.class("CheckBox");
 }
 
 function draw(){
-  background(0);
+  // background(100);
+  clear();//Make the canvas background transparent
 
   let vol = microphone.getLevel()*sensitiveness.value();
   print(vol);
