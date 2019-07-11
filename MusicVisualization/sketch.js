@@ -93,6 +93,7 @@ function draw(){
   background(0);
 
   let vol = microphone.getLevel()*sensitiveness.value();
+  print(vol);
   rotateAngle += 0.2;
 
   sphere.rotation(vol, rotateAngle);
