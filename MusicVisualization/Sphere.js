@@ -20,18 +20,20 @@ class Sphere{
             particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*32);
             particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
           }else{
-            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*28);
-            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*28);
+            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*32);
+            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*32);
             particle.position.z = (r + noise(offset)*vol*120) * cos(i* (transformSlider2.value()+this.animateValue) );
           }
 
           this.particles.push(particle);
+
         }
+        // print(this.particles.length);
       }
 
       if(sphereMode.value() == "Normal Sphere"){
-        for(let i = 0; i < 360; i += 10){//For phi
-          for(let j = 10; j < 180; j += 10){//For theta
+        for(let i = 0; i < 360; i += 12){//For phi
+          for(let j = 10; j < 180; j += 12){//For theta
 
             offset = offset + offsetSlider.value();
             let r = map(vol, 0, 1, widthX/5, width/3);
@@ -49,8 +51,10 @@ class Sphere{
             }
 
             this.particles.push(particle);
+
           }
         }
+        // print(this.particles.length);
       }
 
 

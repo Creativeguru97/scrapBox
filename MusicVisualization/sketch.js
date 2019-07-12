@@ -144,8 +144,8 @@ function draw(){
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
   offsetDisplay.html("Noise offset: " + offsetSlider.value());
-  transformDisplay.html("Transfrom value1: " + transformSlider.value());
-  transformDisplay2.html("Transfrom value2: " + transformSlider2.value());
+  transformDisplay.html("Transform value1: " + transformSlider.value());
+  transformDisplay2.html("Transform value2: " + transformSlider2.value());
   lengthDisplay.html("Line length: " + lengthSlider.value());
   lineWeightDisplay.html("Line thickness: " + lineWeightSlider.value());
 
