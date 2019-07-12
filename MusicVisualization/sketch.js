@@ -1,62 +1,73 @@
 //I use Chrome since p5.AudioIn is not supported on Safari and iOS.
 let canvas;
-let button;
-let displayMode;
+let button;// Toggle Microphone's ON and OFF
+let sphereMode;//Normal or Spiral?
+let displayMode;//LineMode or PointMode?
 let buttonDisplay;
 
 let microphone;
 let isListening = false;
 
-const widthX = 800;//Must be power of 2 if I use p5.FFT()
-const resolution = 64;
-const w = widthX / resolution;
-let offset = 0.0;
+const widthX = 900;//Must be power of 2 if I use p5.FFT()
+// const resolution = 64;
+// const w = widthX / resolution;
 let sphere;
 let rotateAngle = 0.0;
-let sensitiveness;
-let sensitiveDisplay;
-let offsetSlider, lengthSlider, lineWeightSlider, colorChangeSlider;
-let offsetDisplay, lengthDisplay, lineWeightDisplay, colorChangeDisplay;
+
+//--- A lot of parameter relevant stuff ---
+let offset = 0.0;
+let sensitiveness, offsetSlider, transformSlider, transformSlider2;
+let sensitiveDisplay, offsetDisplay, transformDisplay, transformDisplay2;
+let lengthSlider, lineWeightSlider, colorChangeSlider;
+let lengthDisplay, lineWeightDisplay, colorChangeDisplay;
 let colorChangeSpeed;
 
-let pointWeightSlider;
-
+let pointWeightSlider, pointWeightDisplay;
+let animate;
+let isAnimated = false;
 let flashes;
 let doesFlashes = false;
-let verticalLines;
-let doesShowLines = false;
-
-let headLine1;
-let headLine2;
+let lasers;
+let doesShowLasers = false;
+//--- A lot of parameter relevant stuff ---
 
 
 function setup(){
   canvas = createCanvas(widthX, widthX, WEBGL);
-  canvas.position(400, 0);
+  canvas.position(300, 0);
   angleMode(DEGREES);
-
+  // blend(0, 0, widthX, widthX, 0, 0, widthX, widthX, ADD);
 
   microphone = new p5.AudioIn(print("Unknown error occured"));
   // fft = new p5.FFT(0.5, resolution);//For linear
 
-
   // fft = new p5.FFT(0.5, 256);
   sphere = new Sphere();
 
+  //--- A lot of parameter relevant stuff ---
   buttonDisplay = createDiv();
   buttonDisplay.class("buttonDisplay");
   button = createButton("microphone ON");
   button.mousePressed(togglePlaying);
 
+  createDiv();
+  sphereMode = createSelect();
+  sphereMode.option("Normal Sphere");
+  sphereMode.option("Spiral Sphere");
+  sphereMode.class("Selector");
+  sphereMode.id("sphereModeSelector");
+
+  createDiv();
   displayMode = createSelect();
-  displayMode.option("Line");
-  displayMode.option("Point");
+  displayMode.option("Line mode");
+  displayMode.option("Point mode");
   displayMode.class("Selector");
+  displayMode.id("LastSelector");
 
 
   sensitiveDisplay = createDiv();
   sensitiveDisplay.class("Display");
-  sensitiveness = createSlider(1, 20, 1, 0.5);//(min, max, default, increment)
+  sensitiveness = createSlider(1, 20, 10, 0.5);//(min, max, default, increment)
   sensitiveness.class("Slider");
 
   offsetDisplay = createDiv();
@@ -64,7 +75,23 @@ function setup(){
   offsetSlider = createSlider(0, 0.1, 0.02, 0.01);
   offsetSlider.class("Slider");
 
-  headLine1 = createP("----- Line mode -----");
+  animate = createCheckbox("Animate", false);
+  animate.changed(animateSphere);
+  animate.class("CheckBox");
+
+  transformDisplay = createDiv();
+  transformDisplay.class("Display");
+  transformSlider = createSlider(1, 35, 1, 0.01);
+  transformSlider.class("Slider");
+  transformSlider.id("transformSlider");
+
+  transformDisplay2 = createDiv();
+  transformDisplay2.class("Display");
+  transformSlider2 = createSlider(1, 35, 1, 0.01);
+  transformSlider2.class("Slider");
+  transformSlider2.id("transformSlider");
+
+  headLine1 = createP("----- Lines ---");
   headLine1.class("Display");
 
 
@@ -75,7 +102,7 @@ function setup(){
 
   lineWeightDisplay = createDiv();
   lineWeightDisplay.class("Display");
-  lineWeightSlider = createSlider(0, 10, 1, 1);
+  lineWeightSlider = createSlider(0, 10, 0, 1);
   lineWeightSlider.class("Slider");
 
   colorChangeDisplay = createDiv();
@@ -83,37 +110,57 @@ function setup(){
   colorChangeSlider = createSlider(1000, 6000, 3000, 500);
   colorChangeSlider.class("Slider");
 
-  headLine2 = createP("----- Point mode -----");
+  headLine2 = createP("----- Points -----");
   headLine2.class("Display");
 
-  flashes = createCheckbox("flashes", false);
+  flashes = createCheckbox("Flashes", false);
   flashes.changed(pointModeFlashes);
   flashes.class("CheckBox");
 
-  verticalLines = createCheckbox("verticalLines", false);
-  verticalLines.changed(pointModeVerticalLines);
-  verticalLines.class("CheckBox");
+  lasers = createCheckbox("Laser", false);
+  lasers.changed(pointModeLaser);
+  lasers.class("CheckBox");
+
+  pointWeightDisplay = createDiv();
+  pointWeightDisplay.class("Display");
+  pointWeightDisplay.id("pointsliderMargin");
+  pointWeightSlider = createSlider(0, 10, 0, 1);
+  pointWeightSlider.class("Slider");
+  //--- A lot of parameter relevant stuff ---
+
 }
 
 function draw(){
   // background(100);
-  clear();//Make the canvas background transparent
+  clear();//Make the canvas background transparent, because it's cool
 
   let vol = microphone.getLevel()*sensitiveness.value();
-  print(vol);
   rotateAngle += 0.2;
 
   sphere.rotation(vol, rotateAngle);
   sphere.show(vol);
+  sphere.animation();
 
+  //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
   offsetDisplay.html("Noise offset: " + offsetSlider.value());
+  transformDisplay.html("Transfrom value1: " + transformSlider.value());
+  transformDisplay2.html("Transfrom value2: " + transformSlider2.value());
   lengthDisplay.html("Line length: " + lengthSlider.value());
   lineWeightDisplay.html("Line thickness: " + lineWeightSlider.value());
 
   colorChangeSpeed = map(colorChangeSlider.value(), 1000, 6000, 6, 1);
   colorChangeDisplay.html("Color change speed: " + colorChangeSpeed);
+  pointWeightDisplay.html("Point thickness: " + pointWeightSlider.value());
 
+}
+
+function animateSphere(){
+  if(this.checked()){
+    isAnimated = true;
+  }else{
+    isAnimated = false;
+  }
 }
 
 function pointModeFlashes(){
@@ -123,11 +170,11 @@ function pointModeFlashes(){
     doesFlashes = false;
   }
 }
-function pointModeVerticalLines(){
+function pointModeLaser(){
   if(this.checked()){
-    doesShowLines = true;
+    doesShowLasers = true;
   }else{
-    doesShowLines = false;
+    doesShowLasers = false;
   }
 }
 

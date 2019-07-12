@@ -8,12 +8,16 @@
   color: #fff;
   background: none;
   border: 1px solid #fff;
-  font-size: 16pt;
+  font-size: 10pt;
   text-align: center;
-  width: 100px;
+  width: 160px;
   margin: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   border-radius: 16px;
+}
+
+#LastSelector{
+  margin-bottom: 50px;
 }
 
 .Slider{
@@ -37,8 +41,19 @@
   outline: none;
 }
 
+#transformSlider{
+
+  width:250px;
+}
+
 .CheckBox{
   color: #fff;
+  margin-left: 20px;
+  margin-bottom: 3px;
+}
+
+#pointsliderMargin{
+  margin-top: 20px;
 }
 
 button {
@@ -48,7 +63,7 @@ button {
   font-size: 16pt;
   width:180px;
   margin: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   border-radius: 16px;
 }
 

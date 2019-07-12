@@ -1,70 +1,119 @@
 class Sphere{
-  constructor(explode){
+  constructor(){
     this.particles = [];
+    this.animateValue = 0;
   }
 
 
   show(vol){
-    // beginShape();//In case we use vertex
-    for(let j = 0; j < 18; j++){
-      for(let i = 0; i < 360; i += 10){
 
-        offset = offset + offsetSlider.value();
-        let r = map(vol, 0, 1, widthX/5, width/3);
-        // let x, y, z;
-        let particle = new Particle(false);
-        if(vol == 0){
-          particle.position.x = r * cos(i);
-          particle.position.y = r * sin(i);
-          // z = r * cos(i);
-        }else{
-          particle.position.x = (r + noise(offset)*vol*120) * cos(i);
-          particle.position.y = (r + noise(offset)*vol*120) * sin(i);
-          // z = (r + noise(offset)*vol*90) * cos(i);
+      colorMode(HSB);
+      if(sphereMode.value() == "Spiral Sphere"){
+        for(let i = 0; i < 180; i += 0.4){
+          offset = offset + offsetSlider.value();
+          let r = map(vol, 0, 1, widthX/5, width/3);
+          // let x, y, z;
+          let particle = new Particle(false);
+          if(vol == 0){
+            //Spherical coordinate to Catesian coordinate
+            particle.position.x = r * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*32);
+            particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*32);
+            particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
+          }else{
+            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*28);
+            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*28);
+            particle.position.z = (r + noise(offset)*vol*120) * cos(i* (transformSlider2.value()+this.animateValue) );
+          }
+
+          this.particles.push(particle);
         }
+      }
 
-        this.particles.push(particle);
+      if(sphereMode.value() == "Normal Sphere"){
+        for(let i = 0; i < 360; i += 10){//For phi
+          for(let j = 10; j < 180; j += 10){//For theta
 
-        colorMode(HSB);
-        let hue = map(i, 0, 360, 0, 64);
-        stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+            offset = offset + offsetSlider.value();
+            let r = map(vol, 0, 1, widthX/5, width/3);
 
-        //Line
-        if(displayMode.value() == "Line"){
-          strokeWeight(0.6 + vol*lineWeightSlider.value());
+            let particle = new Particle(false);
+            if(vol == 0){
+              //Spherical coordinate to Catesian coordinate
+              particle.position.x = r * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
+              particle.position.y = r * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
+              particle.position.z = r * cos(j* (transformSlider2.value()+this.animateValue) );
+            }else{
+              particle.position.x = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
+              particle.position.y = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
+              particle.position.z = (r + noise(offset)*vol*120) * cos(j* (transformSlider2.value()+this.animateValue) );
+            }
+
+            this.particles.push(particle);
+          }
+        }
+      }
+
+
+
+      strokeWeight(0.6 + vol*lineWeightSlider.value());
+
+        //LineMode
+      if(displayMode.value() == "Line mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 64);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+
           line(
-            particle.position.x,
-            particle.position.y,
-            particle.position.x*(1.03+vol*lengthSlider.value()),
-            particle.position.y*(1.03+vol*lengthSlider.value())
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z,
+            this.particles[i].position.x*(1.03+vol*lengthSlider.value()),
+            this.particles[i].position.y*(1.03+vol*lengthSlider.value()),
+            this.particles[i].position.z*(1.03+vol*lengthSlider.value())
           );
         }
-
-        //point version
-        if(displayMode.value() == "Point"){
-          strokeWeight(3.5);
-          point(particle.position.x, particle.position.y, 0);
-        }
-
       }
-      if(displayMode.value() == "Point"){
+
+      //PointMode
+      if(displayMode.value() == "Point mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 64);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+          strokeWeight(3.5 + pointWeightSlider.value());
+          point(
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z
+          );
+        }
+      }
+
+
+      if(displayMode.value() == "Point mode"){
         if(doesFlashes == true){
           this.flashes();
         }
 
-        if(doesShowLines == true){
-          this.verticalLines();
+        if(doesShowLasers == true){
+          this.laser();
         }
       }
-      rotateY(10);
+
+    this.particles.splice(0, this.particles.length);//Erase all particle at each frame
+  }
+
+  animation(){
+    if(isAnimated == true){
+      this.animateValue += 0.03;
+    }else if(isAnimated == false){
+      this.animateValue = 0.0;
     }
-    this.particles.splice(0, this.particles.length);
   }
 
 
   rotation(vol, rotateAngle){
     rotateY(rotateAngle);
-    rotateX(-30);
+    rotateX(60);
   }
 
   flashes(){
@@ -74,14 +123,14 @@ class Sphere{
           xS2 = this.particles[luckyNumber2].position.x;
           yS2 = this.particles[luckyNumber2].position.y;
           zS2 = this.particles[luckyNumber2].position.z;
-          strokeWeight(11);
+          strokeWeight(14+pointWeightSlider.value()*2);
           point(xS2, yS2, zS2);
       }
   }
 
-  verticalLines(){
+  laser(){
     strokeWeight(1);
-    let luckyNumber = floor(random(0, this.particles.length));
+    let luckyNumber = floor(random(0, this.particles.length - 1));
 
     let xS, yS, zS, xE, yE, zE;
     if((luckyNumber+1)%36 == 0){
@@ -105,7 +154,6 @@ class Sphere{
     }
   }
 
-  // Horizontal lines. This doesn't working with current way to display every point
   // horizontalLines(vol){
       // let xS2, yS2, zS2, xE2, yE2, zE2;
       //   if(this.particles.length > 36){
