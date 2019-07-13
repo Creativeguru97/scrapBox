@@ -17,7 +17,7 @@ class Sphere{
           offset = offset + offsetSlider.value();
           let r = map(vol, 0, 1, widthX/5, width/3);
           // let x, y, z;
-          let particle = new Particle(false);
+          let particle = new Particle();
           if(vol == 0){
             //Spherical coordinate to Catesian coordinate
             particle.position.x = r * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
@@ -44,7 +44,7 @@ class Sphere{
             offset = offset + offsetSlider.value();
             let r = map(vol, 0, 1, widthX/5, width/3);
 
-            let particle = new Particle(false);
+            let particle = new Particle();
             if(vol == 0){
               //Spherical coordinate to Catesian coordinate
               particle.position.x = r * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
