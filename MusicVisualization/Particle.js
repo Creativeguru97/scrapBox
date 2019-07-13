@@ -1,3 +1,4 @@
+//I made this class for in case add various behavior at each particle in future.
 class Particle{
 
   constructor(){

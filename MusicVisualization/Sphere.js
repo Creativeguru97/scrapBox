@@ -19,7 +19,16 @@ class Sphere{
           // let x, y, z;
           let particle = new Particle();
           if(vol == 0){
-            //Spherical coordinate to Catesian coordinate
+
+            //For people who're not familiar with Spherical coordinates
+            //Spherical coordinates to Catesian coordinates
+            // 0 <= theta <= two PI, 0 <= phi <= PI
+            //x = r * sin(theta) * cos(phi)
+            //y = r * sin(theta) * sin(phi)
+            //z = r * cos(theta)
+
+            //More about Spherical coordinates : http://tutorial.math.lamar.edu/Classes/CalcIII/SphericalCoords.aspx
+
             particle.position.x = r * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
             particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
             particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
