@@ -23,9 +23,9 @@ class Sphere{
             //For people who're not familiar with Spherical coordinates
             //Spherical coordinates to Catesian coordinates
             // 0 <= theta <= two PI, 0 <= phi <= PI
-            //x = r * sin(theta) * cos(phi)
-            //y = r * sin(theta) * sin(phi)
-            //z = r * cos(theta)
+            //x = r * sin(phi) * cos(theta)
+            //y = r * sin(phi) * sin(theta)
+            //z = r * cos(phi)
 
             //More about Spherical coordinates : http://tutorial.math.lamar.edu/Classes/CalcIII/SphericalCoords.aspx
 
@@ -47,8 +47,8 @@ class Sphere{
       if(sphereMode.value() == "Normal Sphere"){
         this.density = map(densitySlider.value(), 0, 32, 45, 12);
         this.density2 = map(densitySlider.value(), 0, 32, 2, 12);
-        for(let i = 0; i < 360; i += this.density2){//For phi
-          for(let j = 10; j < this.percentages; j += this.density){//For theta
+        for(let i = 0; i < 360; i += this.density2){//For theta
+          for(let j = 10; j < this.percentages; j += this.density){//For phi
 
             offset = offset + offsetSlider.value();
             let r = map(vol, 0, 1, widthX/5, width/3);
