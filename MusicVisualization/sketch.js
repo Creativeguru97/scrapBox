@@ -1,4 +1,4 @@
-//I use Chrome since p5.AudioIn is not supported on Safari and iOS.
+//I use Firefox since p5.AudioIn is not supported on Safari and iOS.
 let canvas;
 let button;// Toggle Microphone's ON and OFF
 let sphereMode;//Normal or Spiral?
