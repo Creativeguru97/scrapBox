@@ -2,26 +2,30 @@ class Sphere{
   constructor(){
     this.particles = [];
     this.animateValue = 0;
+    this.density;
+    this.density2;
+    this.percentages;
   }
 
 
   show(vol){
+      this.percentages = map(percentageSlider.value(), 0, 100, 0, 180);
 
       colorMode(HSB);
       if(sphereMode.value() == "Spiral Sphere"){
-        for(let i = 0; i < 180; i += 0.4){
+        for(let i = 0; i < this.percentages; i += 0.5){
           offset = offset + offsetSlider.value();
           let r = map(vol, 0, 1, widthX/5, width/3);
           // let x, y, z;
           let particle = new Particle(false);
           if(vol == 0){
             //Spherical coordinate to Catesian coordinate
-            particle.position.x = r * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*32);
-            particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*32);
+            particle.position.x = r * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
+            particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
             particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
           }else{
-            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*32);
-            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*32);
+            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
+            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
             particle.position.z = (r + noise(offset)*vol*120) * cos(i* (transformSlider2.value()+this.animateValue) );
           }
 
@@ -32,8 +36,10 @@ class Sphere{
       }
 
       if(sphereMode.value() == "Normal Sphere"){
-        for(let i = 0; i < 360; i += 12){//For phi
-          for(let j = 10; j < 180; j += 12){//For theta
+        this.density = map(densitySlider.value(), 0, 32, 45, 12);
+        this.density2 = map(densitySlider.value(), 0, 32, 2, 12);
+        for(let i = 0; i < 360; i += this.density2){//For phi
+          for(let j = 10; j < this.percentages; j += this.density){//For theta
 
             offset = offset + offsetSlider.value();
             let r = map(vol, 0, 1, widthX/5, width/3);
@@ -90,6 +96,7 @@ class Sphere{
             this.particles[i].position.z
           );
         }
+        print(percentageSlider.value());
       }
 
 
@@ -108,7 +115,7 @@ class Sphere{
 
   animation(){
     if(isAnimated == true){
-      this.animateValue += 0.03;
+      this.animateValue += 0.01;
     }else if(isAnimated == false){
       this.animateValue = 0.0;
     }
@@ -123,38 +130,42 @@ class Sphere{
   flashes(){
       let xS2, yS2, zS2, xE2, yE2, zE2;
       if(this.particles.length > 36){
-        let luckyNumber2 = floor(random(this.particles.length - 36));
-          xS2 = this.particles[luckyNumber2].position.x;
-          yS2 = this.particles[luckyNumber2].position.y;
-          zS2 = this.particles[luckyNumber2].position.z;
-          strokeWeight(14+pointWeightSlider.value()*2);
-          point(xS2, yS2, zS2);
+        for(let i = 0; i < 4; i++){
+          let luckyNumber2 = floor(random(this.particles.length - 36));
+            xS2 = this.particles[luckyNumber2].position.x;
+            yS2 = this.particles[luckyNumber2].position.y;
+            zS2 = this.particles[luckyNumber2].position.z;
+            strokeWeight(14+pointWeightSlider.value()*2);
+            point(xS2, yS2, zS2);
+        }
       }
   }
 
   laser(){
     strokeWeight(1);
-    let luckyNumber = floor(random(0, this.particles.length - 1));
+    if(this.particles.length > 0){
+      let luckyNumber = floor(random(0, this.particles.length - 1));
 
-    let xS, yS, zS, xE, yE, zE;
-    if((luckyNumber+1)%36 == 0){
-      xS = this.particles[luckyNumber].position.x;
-      yS = this.particles[luckyNumber].position.y;
-      zS = this.particles[luckyNumber].position.z;
-      xE = this.particles[(luckyNumber+1)-36].position.x;
-      yE = this.particles[(luckyNumber+1)-36].position.y;
-      zE = this.particles[(luckyNumber+1)-36].position.z;
-      line(xS, yS, zS, xE, yE, zE);
-    }else if(luckyNumber == 0){
+      let xS, yS, zS, xE, yE, zE;
+      if((luckyNumber+1)%36 == 0){
+        xS = this.particles[luckyNumber].position.x;
+        yS = this.particles[luckyNumber].position.y;
+        zS = this.particles[luckyNumber].position.z;
+        xE = this.particles[(luckyNumber+1)-36].position.x;
+        yE = this.particles[(luckyNumber+1)-36].position.y;
+        zE = this.particles[(luckyNumber+1)-36].position.z;
+        line(xS, yS, zS, xE, yE, zE);
+      }else if(luckyNumber == 0){
 
-    }else{
-      xS = this.particles[luckyNumber].position.x;
-      yS = this.particles[luckyNumber].position.y;
-      zS = this.particles[luckyNumber].position.z;
-      xE = this.particles[luckyNumber+1].position.x;
-      yE = this.particles[luckyNumber+1].position.y;
-      zE = this.particles[luckyNumber+1].position.z;
-      line(xS, yS, zS, xE, yE, zE);
+      }else{
+        xS = this.particles[luckyNumber].position.x;
+        yS = this.particles[luckyNumber].position.y;
+        zS = this.particles[luckyNumber].position.z;
+        xE = this.particles[luckyNumber+1].position.x;
+        yE = this.particles[luckyNumber+1].position.y;
+        zE = this.particles[luckyNumber+1].position.z;
+        line(xS, yS, zS, xE, yE, zE);
+      }
     }
   }
 

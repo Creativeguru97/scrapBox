@@ -16,8 +16,8 @@ let rotateAngle = 0.0;
 
 //--- A lot of parameter relevant stuff ---
 let offset = 0.0;
-let sensitiveness, offsetSlider, transformSlider, transformSlider2;
-let sensitiveDisplay, offsetDisplay, transformDisplay, transformDisplay2;
+let sensitiveness, offsetSlider, densitySlider, percentageSlider, transformSlider, transformSlider2;
+let sensitiveDisplay, offsetDisplay, densityDisplay, percentageDisplay, transformDisplay, transformDisplay2;
 let lengthSlider, lineWeightSlider, colorChangeSlider;
 let lengthDisplay, lineWeightDisplay, colorChangeDisplay;
 let colorChangeSpeed;
@@ -64,7 +64,6 @@ function setup(){
   displayMode.class("Selector");
   displayMode.id("LastSelector");
 
-
   sensitiveDisplay = createDiv();
   sensitiveDisplay.class("Display");
   sensitiveness = createSlider(1, 20, 10, 0.5);//(min, max, default, increment)
@@ -74,6 +73,17 @@ function setup(){
   offsetDisplay.class("Display");
   offsetSlider = createSlider(0, 0.1, 0.02, 0.01);
   offsetSlider.class("Slider");
+
+  densityDisplay = createDiv();
+  densityDisplay.class("Display");
+  densitySlider = createSlider(1, 32, 28, 0.1);//(min, max, default, increment)
+  densitySlider.class("Slider");
+
+  percentageDisplay = createDiv();
+  percentageDisplay.class("Display");
+  percentageSlider = createSlider(0, 100, 100, 1);//(min, max, default, increment)
+  percentageSlider.class("Slider");
+
 
   animate = createCheckbox("Animate", false);
   animate.changed(animateSphere);
@@ -133,6 +143,7 @@ function setup(){
 function draw(){
   // background(100);
   clear();//Make the canvas background transparent, because it's cool
+  orbitControl(4, 4);//Mouse control
 
   let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
@@ -144,6 +155,8 @@ function draw(){
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
   offsetDisplay.html("Noise offset: " + offsetSlider.value());
+  densityDisplay.html("Density: " + densitySlider.value());
+  percentageDisplay.html(percentageSlider.value()+"%");
   transformDisplay.html("Transform value1: " + transformSlider.value());
   transformDisplay2.html("Transform value2: " + transformSlider2.value());
   lengthDisplay.html("Line length: " + lengthSlider.value());
