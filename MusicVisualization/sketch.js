@@ -31,8 +31,16 @@ let lasers;
 let doesShowLasers = false;
 //--- A lot of parameter relevant stuff ---
 
+let skull;//A freakin cool 3d model sound visualization
+
+
+function preload(){
+  skull = loadJSON("skull.json");//This tells us the skull's every vertices in the obj file.
+}
+
 
 function setup(){
+  // print(skull);
   canvas = createCanvas(widthX, widthX, WEBGL);
   canvas.position(300, 0);
   angleMode(DEGREES);
@@ -54,6 +62,7 @@ function setup(){
   sphereMode = createSelect();
   sphereMode.option("Normal Sphere");
   sphereMode.option("Spiral Sphere");
+  sphereMode.option("Skull");
   sphereMode.class("Selector");
   sphereMode.id("sphereModeSelector");
 
@@ -76,12 +85,12 @@ function setup(){
 
   densityDisplay = createDiv();
   densityDisplay.class("Display");
-  densitySlider = createSlider(1, 32, 28, 0.1);//(min, max, default, increment)
+  densitySlider = createSlider(1, 32, 28, 0.1);
   densitySlider.class("Slider");
 
   percentageDisplay = createDiv();
   percentageDisplay.class("Display");
-  percentageSlider = createSlider(0, 100, 100, 1);//(min, max, default, increment)
+  percentageSlider = createSlider(0, 100, 100, 1);
   percentageSlider.class("Slider");
 
 
@@ -144,13 +153,15 @@ function draw(){
   // background(100);
   clear();//Make the canvas background transparent, because it's cool
   orbitControl(4, 4);//Mouse control
+  colorMode(HSB);
 
   let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
 
   sphere.rotation(vol, rotateAngle);
-  sphere.show(vol);
+  sphere.showSphere(vol);
   sphere.animation();
+  sphere.showSkull(vol);
 
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
