@@ -5,6 +5,8 @@
 }
 
 .Selector{
+  -webkit-appearance: none;
+  -moz-appearance: none;
   color: #fff;
   background: none;
   border: 1px solid #fff;
@@ -21,7 +23,7 @@
 }
 
 .Slider{
-  /* -webkit-appearance: none; for other brawser */
+  -webkit-appearance: none;
   -moz-appearance: none;
   background: none;
   height:16px;
@@ -34,7 +36,8 @@
 
 .Slider::-moz-range-thumb {
   /* -moz-appearance: none; /* Override default look */
-  appearance: none; */
+  -webkit-appearance: none;
+  appearance: none;
   width:10px;
   height:10px;
   background: #fff;

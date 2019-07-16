@@ -157,11 +157,9 @@ function draw(){
   orbitControl(4, 4);//Mouse control
   colorMode(HSB);
 
-  let vol = microphone.getLevel()*sensitiveness.value();
+  let vol = microphone.getLevel()*sensitiveness.value()*10;
   rotateAngle += 0.2;
-
-  print(vol);
-
+  
   sphere.rotation(vol, rotateAngle);
   sphere.showSphere(vol);
   sphere.showSkull(vol);
