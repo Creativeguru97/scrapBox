@@ -41,9 +41,10 @@ function preload(){
 
 
 function setup(){
-  // print(skull);
   canvas = createCanvas(widthX, widthX, WEBGL);
-  canvas.position(300, 0);
+  // canvas.position(300, 0);
+  canvas.class("canvas");
+
   angleMode(DEGREES);
   // blend(0, 0, widthX, widthX, 0, 0, widthX, widthX, ADD);
 
@@ -152,14 +153,13 @@ function setup(){
 }
 
 function draw(){
-  // background(100);
   clear();//Make the canvas background transparent, because it's cool
   orbitControl(4, 4);//Mouse control
   colorMode(HSB);
 
-  let vol = microphone.getLevel()*sensitiveness.value()*10;
+  let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
-  
+
   sphere.rotation(vol, rotateAngle);
   sphere.showSphere(vol);
   sphere.showSkull(vol);

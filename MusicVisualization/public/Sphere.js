@@ -36,9 +36,9 @@ class Sphere{
             particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
             particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
           }else{
-            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
-            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
-            particle.position.z = (r + noise(offset)*vol*120) * cos(i* (transformSlider2.value()+this.animateValue) );
+            particle.position.x = (r + noise(offset)*vol*100) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
+            particle.position.y = (r + noise(offset)*vol*100) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
+            particle.position.z = (r + noise(offset)*vol*100) * cos(i* (transformSlider2.value()+this.animateValue) );
           }
 
           this.particles.push(particle);
@@ -62,9 +62,9 @@ class Sphere{
               particle.position.y = r * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
               particle.position.z = r * cos(j* (transformSlider2.value()+this.animateValue) );
             }else{
-              particle.position.x = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
-              particle.position.y = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
-              particle.position.z = (r + noise(offset)*vol*120) * cos(j* (transformSlider2.value()+this.animateValue) );
+              particle.position.x = (r + noise(offset)*vol*100) * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
+              particle.position.y = (r + noise(offset)*vol*100) * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
+              particle.position.z = (r + noise(offset)*vol*100) * cos(j* (transformSlider2.value()+this.animateValue) );
             }
 
             this.particles.push(particle);
@@ -102,7 +102,6 @@ class Sphere{
             this.particles[i].position.z
           );
         }
-        // print(percentageSlider.value());
       }
 
 
@@ -163,11 +162,8 @@ class Sphere{
             particle.position.y = skull.coordinate[i].y * 100 * (1+noise(offset)*vol);
             particle.position.z = skull.coordinate[i].z * 100 * (1+noise(offset)*vol);
           }
-          // print(skull.coordinate[i].x);
           this.particles.push(particle);
         }
-          print(this.particles.length);
-
 
       if(displayMode.value() == "Line mode"){
         for(let i = 0; i < this.particles.length; i++){
@@ -208,8 +204,6 @@ class Sphere{
         }
       }
     }
-
-    // print(this.particles);
     this.particles.splice(0, this.particles.length);//Erase all particle at each frame
   }
 
@@ -232,7 +226,6 @@ class Sphere{
             particle.position.y = headphone.coordinate[i].y * 80 * (1+noise(offset)*vol);
             particle.position.z = headphone.coordinate[i].z * 80 * (1+noise(offset)*vol);
           }
-          // print(skull.coordinate[i].x);
           this.particles.push(particle);
         }
 
@@ -276,8 +269,6 @@ class Sphere{
         }
       }
     }
-
-    // print(this.particles);
     this.particles.splice(0, this.particles.length);//Erase all particle at each frame
   }
 
