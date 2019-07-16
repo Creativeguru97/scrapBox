@@ -157,7 +157,7 @@ function draw(){
   orbitControl(4, 4);//Mouse control
   colorMode(HSB);
 
-  let vol = microphone.getLevel()*sensitiveness.value()*30;
+  let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
 
   print(vol);
