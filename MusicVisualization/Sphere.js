@@ -5,6 +5,7 @@ class Sphere{
     this.density;
     this.density2;
     this.skullDensity;
+    this.headphoneDensity;
     this.percentages;
     this.skull = [];
   }
@@ -35,9 +36,9 @@ class Sphere{
             particle.position.y = r * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
             particle.position.z = r * cos(i* (transformSlider2.value()+this.animateValue) );
           }else{
-            particle.position.x = (r + noise(offset)*vol*90) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
-            particle.position.y = (r + noise(offset)*vol*90) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
-            particle.position.z = (r + noise(offset)*vol*90) * cos(i* (transformSlider2.value()+this.animateValue) );
+            particle.position.x = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*cos(i*densitySlider.value());
+            particle.position.y = (r + noise(offset)*vol*120) * sin(i* (transformSlider.value()+this.animateValue) )*sin(i*densitySlider.value());
+            particle.position.z = (r + noise(offset)*vol*120) * cos(i* (transformSlider2.value()+this.animateValue) );
           }
 
           this.particles.push(particle);
@@ -61,9 +62,9 @@ class Sphere{
               particle.position.y = r * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
               particle.position.z = r * cos(j* (transformSlider2.value()+this.animateValue) );
             }else{
-              particle.position.x = (r + noise(offset)*vol*90) * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
-              particle.position.y = (r + noise(offset)*vol*90) * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
-              particle.position.z = (r + noise(offset)*vol*90) * cos(j* (transformSlider2.value()+this.animateValue) );
+              particle.position.x = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*cos(i);
+              particle.position.y = (r + noise(offset)*vol*120) * sin(j* (transformSlider.value()+this.animateValue) )*sin(i);
+              particle.position.z = (r + noise(offset)*vol*120) * cos(j* (transformSlider2.value()+this.animateValue) );
             }
 
             this.particles.push(particle);
@@ -203,7 +204,75 @@ class Sphere{
         }
 
         if(doesShowLasers == true){
-          this.laser();
+          this.skullLaser();
+        }
+      }
+    }
+
+    // print(this.particles);
+    this.particles.splice(0, this.particles.length);//Erase all particle at each frame
+  }
+
+
+  showHeadphone(vol){
+    if(sphereMode.value() == "Headphone"){
+      rotateX(90);
+      this.headphoneDensity = int(map(densitySlider.value(), 0, 32, 4, 1));
+
+      //And this below is syntax to access to the each index of array.
+        for(let i = 0; i < headphone.coordinate.length; i+=this.headphoneDensity){
+          offset = offset + offsetSlider.value();
+          let particle = new Particle();
+          if(vol == 0){
+            particle.position.x = headphone.coordinate[i].x * 80;
+            particle.position.y = headphone.coordinate[i].y * 80;
+            particle.position.z = headphone.coordinate[i].z * 80;
+          }else{
+            particle.position.x = headphone.coordinate[i].x * 80 * (1+noise(offset)*vol);
+            particle.position.y = headphone.coordinate[i].y * 80 * (1+noise(offset)*vol);
+            particle.position.z = headphone.coordinate[i].z * 80 * (1+noise(offset)*vol);
+          }
+          // print(skull.coordinate[i].x);
+          this.particles.push(particle);
+        }
+
+
+      if(displayMode.value() == "Line mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 128);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+          strokeWeight(0.6 + vol*lineWeightSlider.value());
+          line(
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z,
+            this.particles[i].position.x * (1.03+vol*lengthSlider.value()),
+            this.particles[i].position.y * (1.03+vol*lengthSlider.value()),
+            this.particles[i].position.z * (1.03+vol*lengthSlider.value()),
+          );
+        }
+      }
+
+      if(displayMode.value() == "Point mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 64);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+          strokeWeight(3.5 + pointWeightSlider.value());
+          point(
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z
+          );
+        }
+      }
+
+      if(displayMode.value() == "Point mode"){
+        if(doesFlashes == true){
+          this.flashes();
+        }
+
+        if(doesShowLasers == true){
+          this.headphoneLaser();
         }
       }
     }
@@ -269,26 +338,66 @@ class Sphere{
     }
   }
 
-  // horizontalLines(vol){
-      // let xS2, yS2, zS2, xE2, yE2, zE2;
-      //   if(this.particles.length > 36){
-      //     let luckyNumber2 = floor(random(this.particles.length - 36));
-      //       // print(luckyNumber2);
-      //       // print(luckyNumber2 + 36);
-      //       xS2 = this.particles[luckyNumber2].position.x;
-      //       yS2 = this.particles[luckyNumber2].position.y;
-      //       zS2 = this.particles[luckyNumber2].position.z;
-      //       xE2 = this.particles[luckyNumber2+35].position.x;
-      //       yE2 = this.particles[luckyNumber2+35].position.y;
-      //       zE2 = this.particles[luckyNumber2+35].position.z;
-      //       strokeWeight(10);
-      //
-      //       point(xS2, yS2, zS2);
-      //       point(xE2, yE2, zE2);
-      //       strokeWeight(1);
-      //       line(xS2, yS2, zS2, xE2, yE2, zE2);
-      //   }
+  skullLaser(){
+    strokeWeight(1);
+    if(this.particles.length > 730){
+      for(let i = 0; i < 2; i++){
+      let luckyNumberLE = floor(random(718, 730));//Left eyes vertices indecies
+      let luckyNumberLE2 = floor(random(718, 730));
 
-  // }
+      let xSL, ySL, zSL, xEL, yEL, zEL;
+        xSL = this.particles[luckyNumberLE].position.x;
+        ySL = this.particles[luckyNumberLE].position.y;
+        zSL = this.particles[luckyNumberLE].position.z;
+        xEL = this.particles[luckyNumberLE2].position.x;
+        yEL = this.particles[luckyNumberLE2].position.y;
+        zEL = this.particles[luckyNumberLE2].position.z;
+        line(xSL, ySL, zSL, xEL, yEL, zEL);
+
+        let luckyNumberRE = floor(random(323, 335));//Right eyes vertices indecies
+        let luckyNumberRE2 = floor(random(323, 335));
+
+        let xSR, ySR, zSR, xER, yER, zER;
+          xSR = this.particles[luckyNumberRE].position.x;
+          ySR = this.particles[luckyNumberRE].position.y;
+          zSR = this.particles[luckyNumberRE].position.z;
+          xER = this.particles[luckyNumberRE2].position.x;
+          yER = this.particles[luckyNumberRE2].position.y;
+          zER = this.particles[luckyNumberRE2].position.z;
+          line(xSR, ySR, zSR, xER, yER, zER);
+      }
+    }
+  }
+
+  headphoneLaser(){
+    strokeWeight(1);
+    if(this.particles.length > 352){
+      let luckyNumberL = floor(random(329, 352));//Left Ear vertices indecies
+      let luckyNumberL2 = floor(random(329, 352));
+      let luckyNumberR = floor(random(96, 119));//Right Ear vertices indecies
+      let luckyNumberR2 = floor(random(96, 119));
+
+      let xSL, ySL, zSL, xEL, yEL, zEL;
+      xSL = this.particles[luckyNumberL].position.x;
+      ySL = this.particles[luckyNumberL].position.y;
+      zSL = this.particles[luckyNumberL].position.z;
+      xEL = this.particles[luckyNumberL2].position.x;
+      yEL = this.particles[luckyNumberL2].position.y;
+      zEL = this.particles[luckyNumberL2].position.z;
+
+      let xSR, ySR, zSR, xER, yER, zER;
+      xSR = this.particles[luckyNumberR].position.x;
+      ySR = this.particles[luckyNumberR].position.y;
+      zSR = this.particles[luckyNumberR].position.z;
+      xER = this.particles[luckyNumberR2].position.x;
+      yER = this.particles[luckyNumberR2].position.y;
+      zER = this.particles[luckyNumberR2].position.z;
+
+      // line(xSL, ySL, zSL, xEL, yEL, zEL);
+      // line(xSR, ySR, zSR, xER, yER, zER);
+
+      line(xSR, ySR, zSR, xEL, yEL, zEL);
+    }
+  }
 
 }

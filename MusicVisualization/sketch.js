@@ -32,10 +32,11 @@ let doesShowLasers = false;
 //--- A lot of parameter relevant stuff ---
 
 let skull;//A freakin cool 3d model sound visualization
-
+let headphone;
 
 function preload(){
   skull = loadJSON("skull.json");//This tells us the skull's every vertices in the obj file.
+  headphone = loadJSON("headphone.json");//This tells us the skull's every vertices in the obj file.
 }
 
 
@@ -63,6 +64,7 @@ function setup(){
   sphereMode.option("Normal Sphere");
   sphereMode.option("Spiral Sphere");
   sphereMode.option("Skull");
+  sphereMode.option("Headphone");
   sphereMode.class("Selector");
   sphereMode.id("sphereModeSelector");
 
@@ -155,13 +157,16 @@ function draw(){
   orbitControl(4, 4);//Mouse control
   colorMode(HSB);
 
-  let vol = microphone.getLevel()*sensitiveness.value();
+  let vol = microphone.getLevel()*sensitiveness.value()*30;
   rotateAngle += 0.2;
+
+  print(vol);
 
   sphere.rotation(vol, rotateAngle);
   sphere.showSphere(vol);
-  sphere.animation();
   sphere.showSkull(vol);
+  sphere.showHeadphone(vol);
+  sphere.animation();
 
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());

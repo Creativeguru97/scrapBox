@@ -2,7 +2,8 @@ JSONArray strings;
 JSONArray coordinates;
 
 void setup(){
-  strings = loadJSONArray("data/skull.json");
+  //strings = loadJSONArray("data/skull.json");
+  strings = loadJSONArray("data/headphone.json");
   coordinates = new JSONArray();
   
   for (int i = 0; i < strings.size(); i++) {
@@ -19,6 +20,6 @@ void setup(){
     coordinates.setJSONObject(i, coordinate);
   }
   
-  saveJSONArray(coordinates, "newSkull.json");
+  saveJSONArray(coordinates, "newHeadphone.json");
   
 }
