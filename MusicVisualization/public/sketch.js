@@ -11,7 +11,7 @@ let isListening = false;
 const widthX = 900;//Must be power of 2 if I use p5.FFT()
 // const resolution = 64;
 // const w = widthX / resolution;
-let sphere;
+let element;
 let rotateAngle = 0.0;
 
 //--- A lot of parameter relevant stuff ---
@@ -33,10 +33,12 @@ let doesShowLasers = false;
 
 let skull;//A freakin cool 3d model sound visualization
 let headphone;
+let noid;
 
 function preload(){
   skull = loadJSON("skull.json");//This tells us the skull's every vertices in the obj file.
-  headphone = loadJSON("headphone.json");//This tells us the skull's every vertices in the obj file.
+  headphone = loadJSON("headphone.json");
+  noid = loadJSON("noid.json");
 }
 
 
@@ -52,7 +54,7 @@ function setup(){
   // fft = new p5.FFT(0.5, resolution);//For linear
 
   // fft = new p5.FFT(0.5, 256);
-  sphere = new Sphere();
+  element = new Element();
 
   //--- A lot of parameter relevant stuff ---
   buttonDisplay = createDiv();
@@ -66,6 +68,7 @@ function setup(){
   sphereMode.option("Spiral Sphere");
   sphereMode.option("Skull");
   sphereMode.option("Headphone");
+  sphereMode.option("Noid");
   sphereMode.class("Selector");
   sphereMode.id("sphereModeSelector");
 
@@ -160,11 +163,12 @@ function draw(){
   let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
 
-  sphere.rotation(vol, rotateAngle);
-  sphere.showSphere(vol);
-  sphere.showSkull(vol);
-  sphere.showHeadphone(vol);
-  sphere.animation();
+  element.rotation(vol, rotateAngle);
+  element.showSphere(vol);
+  element.showSkull(vol);
+  element.showHeadphone(vol);
+  element.showNoid(vol);
+  element.animation();
 
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());

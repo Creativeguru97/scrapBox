@@ -1,4 +1,4 @@
-class Sphere{
+class Element{
   constructor(){
     this.particles = [];
     this.animateValue = 0;
@@ -122,9 +122,9 @@ class Sphere{
 
   showSkull(vol){
     if(sphereMode.value() == "Skull"){
-      rotateX(125);
+      rotateX(15);
       this.skullDensity = int(map(densitySlider.value(), 0, 32, 4, 1));
-
+      this.percentages = map(percentageSlider.value(), 0, 100, 0, skull.coordinate.length);
 
       //For people who're not familiar with json file.
       /*
@@ -150,17 +150,17 @@ class Sphere{
       */
 
       //And this below is syntax to access to the each index of array.
-        for(let i = 0; i < skull.coordinate.length; i+=this.skullDensity){
+        for(let i = 0; i < this.percentages; i+=this.skullDensity){
           offset = offset + offsetSlider.value();
           let particle = new Particle();
           if(vol == 0){
             particle.position.x = skull.coordinate[i].x * 100;
-            particle.position.y = skull.coordinate[i].y * 100;
-            particle.position.z = skull.coordinate[i].z * 100;
+            particle.position.y = skull.coordinate[i].z * 100;
+            particle.position.z = skull.coordinate[i].y * 100;
           }else{
             particle.position.x = skull.coordinate[i].x * 100 * (1+noise(offset)*vol);
-            particle.position.y = skull.coordinate[i].y * 100 * (1+noise(offset)*vol);
-            particle.position.z = skull.coordinate[i].z * 100 * (1+noise(offset)*vol);
+            particle.position.y = skull.coordinate[i].z * 100 * (1+noise(offset)*vol);
+            particle.position.z = skull.coordinate[i].y * 100 * (1+noise(offset)*vol);
           }
           this.particles.push(particle);
         }
@@ -210,21 +210,21 @@ class Sphere{
 
   showHeadphone(vol){
     if(sphereMode.value() == "Headphone"){
-      rotateX(90);
+      // rotateX(90);
       this.headphoneDensity = int(map(densitySlider.value(), 0, 32, 4, 1));
+      this.percentages = map(percentageSlider.value(), 0, 100, 0, headphone.coordinate.length);
 
-      //And this below is syntax to access to the each index of array.
-        for(let i = 0; i < headphone.coordinate.length; i+=this.headphoneDensity){
+        for(let i = 0; i < this.percentages; i+=this.headphoneDensity){
           offset = offset + offsetSlider.value();
           let particle = new Particle();
           if(vol == 0){
             particle.position.x = headphone.coordinate[i].x * 80;
-            particle.position.y = headphone.coordinate[i].y * 80;
-            particle.position.z = headphone.coordinate[i].z * 80;
+            particle.position.y = headphone.coordinate[i].z * 80;
+            particle.position.z = headphone.coordinate[i].y * 80;
           }else{
             particle.position.x = headphone.coordinate[i].x * 80 * (1+noise(offset)*vol);
-            particle.position.y = headphone.coordinate[i].y * 80 * (1+noise(offset)*vol);
-            particle.position.z = headphone.coordinate[i].z * 80 * (1+noise(offset)*vol);
+            particle.position.y = headphone.coordinate[i].z * 80 * (1+noise(offset)*vol);
+            particle.position.z = headphone.coordinate[i].y * 80 * (1+noise(offset)*vol);
           }
           this.particles.push(particle);
         }
@@ -266,6 +266,70 @@ class Sphere{
 
         if(doesShowLasers == true){
           this.headphoneLaser();
+        }
+      }
+    }
+    this.particles.splice(0, this.particles.length);//Erase all particle at each frame
+  }
+
+  showNoid(vol){
+    if(sphereMode.value() == "Noid"){
+      rotateX(15);
+      this.skullDensity = int(map(densitySlider.value(), 0, 32, 6, 1));
+      this.percentages = map(percentageSlider.value(), 0, 100, 0, noid.coordinate.length);
+
+        for(let i = 0; i < this.percentages; i+=this.skullDensity){
+          offset = offset + offsetSlider.value();
+          let particle = new Particle();
+          if(vol == 0){
+            particle.position.x = (noid.coordinate[i].x - 3) * 150;
+            particle.position.y = (noid.coordinate[i].z + 3) * 150;
+            particle.position.z = (noid.coordinate[i].y - 3) * 150;
+          }else{
+            particle.position.x = (noid.coordinate[i].x - 3) * 150 * (1+noise(offset)*vol);
+            particle.position.y = (noid.coordinate[i].z + 3) * 150 * (1+noise(offset)*vol);
+            particle.position.z = (noid.coordinate[i].y - 3) * 150 * (1+noise(offset)*vol);
+          }
+          this.particles.push(particle);
+        }
+        // print(this.particles.length);
+
+      if(displayMode.value() == "Line mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 128);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+          strokeWeight(0.6 + vol*lineWeightSlider.value());
+          line(
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z,
+            this.particles[i].position.x * (1.03+vol*lengthSlider.value()),
+            this.particles[i].position.y * (1.03+vol*lengthSlider.value()),
+            this.particles[i].position.z * (1.03+vol*lengthSlider.value()),
+          );
+        }
+      }
+
+      if(displayMode.value() == "Point mode"){
+        for(let i = 0; i < this.particles.length; i++){
+          let hue = map(i, 0, this.particles.length, 0, 64);
+          stroke((hue+330)*noise(offset/colorChangeSlider.value()), 255, 255);
+          strokeWeight(3.5 + pointWeightSlider.value());
+          point(
+            this.particles[i].position.x,
+            this.particles[i].position.y,
+            this.particles[i].position.z
+          );
+        }
+      }
+
+      if(displayMode.value() == "Point mode"){
+        if(doesFlashes == true){
+          this.flashes();
+        }
+
+        if(doesShowLasers == true){
+          this.noidLaser();
         }
       }
     }
@@ -390,5 +454,48 @@ class Sphere{
       line(xSR, ySR, zSR, xEL, yEL, zEL);
     }
   }
+
+  noidLaser(){
+    strokeWeight(1);
+
+      if(this.particles.length > 239){
+        let luckyNumberLA = floor(random(232, 239));//Left arm
+        let xSL, ySL, zSL;
+        xSL = this.particles[luckyNumberLA].position.x;
+        ySL = this.particles[luckyNumberLA].position.y;
+        zSL = this.particles[luckyNumberLA].position.z;
+        line(xSL, ySL, zSL, 0, 0, -1200);
+
+        if(this.particles.length > 494){
+          let luckyNumberLL = floor(random(485, 494));//Left leg
+          let xSLL, ySLL, zSLL;
+          xSLL = this.particles[luckyNumberLL].position.x;
+          ySLL = this.particles[luckyNumberLL].position.y;
+          zSLL = this.particles[luckyNumberLL].position.z;
+          line(xSLL, ySLL, zSLL, 0, 0, -1200);
+
+          if(this.particles.length > 863){
+            let luckyNumberRA = floor(random(855, 863));//Right arm
+            let xSR, ySR, zSR;
+            xSR = this.particles[luckyNumberRA].position.x;
+            ySR = this.particles[luckyNumberRA].position.y;
+            zSR = this.particles[luckyNumberRA].position.z;
+            line(xSR, ySR, zSR, 0, 0, -1200);
+
+            if(this.particles.length > 1143){
+              let luckyNumberRL = floor(random(1135, 1143));//Right leg
+              let xSRL, ySRL, zSRL;
+              xSRL = this.particles[luckyNumberRL].position.x;
+              ySRL = this.particles[luckyNumberRL].position.y;
+              zSRL = this.particles[luckyNumberRL].position.z;
+              line(xSRL, ySRL, zSRL, 0, 0, -1200);
+
+
+            }
+          }
+        }
+      }
+  }
+
 
 }
