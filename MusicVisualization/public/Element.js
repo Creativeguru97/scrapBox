@@ -444,10 +444,11 @@ class Element{
   }
 
   flashes(){
+    if(this.percentages > 10){
       if(elementMode.value() == "Normal Sphere" || elementMode.value() == "Spiral Sphere"){
         let xS2, yS2, zS2, xE2, yE2, zE2;
           for(let i = 0; i < 3; i++){
-          let luckyNumber2 = floor(random(this.particles.length));
+          let luckyNumber2 = floor(random(this.percentages));
             xS2 = this.particles[luckyNumber2].position.x;
             yS2 = this.particles[luckyNumber2].position.y;
             zS2 = this.particles[luckyNumber2].position.z;
@@ -457,7 +458,7 @@ class Element{
       }else if(elementMode.value() == "Skull"){
         let xS2, yS2, zS2, xE2, yE2, zE2;
           for(let i = 0; i < 3; i++){
-          let luckyNumber2 = floor(random(this.skullParticles.length));
+          let luckyNumber2 = floor(random(this.percentages));
             xS2 = this.skullParticles[luckyNumber2].position.x;
             yS2 = this.skullParticles[luckyNumber2].position.y;
             zS2 = this.skullParticles[luckyNumber2].position.z;
@@ -467,7 +468,7 @@ class Element{
       }else if(elementMode.value() == "Headphone"){
         let xS2, yS2, zS2, xE2, yE2, zE2;
           for(let i = 0; i < 3; i++){
-          let luckyNumber2 = floor(random(this.headphoneParticles.length));
+          let luckyNumber2 = floor(random(this.percentages));
             xS2 = this.headphoneParticles[luckyNumber2].position.x;
             yS2 = this.headphoneParticles[luckyNumber2].position.y;
             zS2 = this.headphoneParticles[luckyNumber2].position.z;
@@ -477,7 +478,7 @@ class Element{
       }else if(elementMode.value() == "Noid"){
         let xS2, yS2, zS2, xE2, yE2, zE2;
           for(let i = 0; i < 3; i++){
-          let luckyNumber2 = floor(random(this.noidParticles.length));
+          let luckyNumber2 = floor(random(this.percentages));
             xS2 = this.noidParticles[luckyNumber2].position.x;
             yS2 = this.noidParticles[luckyNumber2].position.y;
             zS2 = this.noidParticles[luckyNumber2].position.z;
@@ -487,7 +488,7 @@ class Element{
       }else if(elementMode.value() == "Record"){
         let xS2, yS2, zS2, xE2, yE2, zE2;
           for(let i = 0; i < 3; i++){
-          let luckyNumber2 = floor(random(this.recordParticles.length));
+          let luckyNumber2 = floor(random(this.percentages));
             xS2 = this.recordParticles[luckyNumber2].position.x;
             yS2 = this.recordParticles[luckyNumber2].position.y;
             zS2 = this.recordParticles[luckyNumber2].position.z;
@@ -495,6 +496,7 @@ class Element{
             point(xS2, yS2, zS2);
           }
       }
+    }
   }
 
   laser(){
