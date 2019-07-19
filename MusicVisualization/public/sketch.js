@@ -1,7 +1,7 @@
 //I use Firefox since p5.AudioIn is not supported on Safari and iOS.
 let canvas;
 let button;// Toggle Microphone's ON and OFF
-let sphereMode;//Normal or Spiral?
+let elementMode;//Normal or Spiral?
 let displayMode;//LineMode or PointMode?
 let buttonDisplay;
 
@@ -65,15 +65,15 @@ function setup(){
   button.mousePressed(togglePlaying);
 
   createDiv();
-  sphereMode = createSelect();
-  sphereMode.option("Normal Sphere");
-  sphereMode.option("Spiral Sphere");
-  sphereMode.option("Skull");
-  sphereMode.option("Headphone");
-  sphereMode.option("Noid");
-  sphereMode.option("Record");
-  sphereMode.class("Selector");
-  sphereMode.id("sphereModeSelector");
+  elementMode = createSelect();
+  elementMode.option("Normal Sphere");
+  elementMode.option("Spiral Sphere");
+  elementMode.option("Skull");
+  elementMode.option("Headphone");
+  elementMode.option("Noid");
+  elementMode.option("Record");
+  elementMode.class("Selector");
+  elementMode.id("sphereModeSelector");
 
   createDiv();
   displayMode = createSelect();
@@ -155,7 +155,6 @@ function setup(){
   pointWeightSlider = createSlider(0, 10, 0, 1);
   pointWeightSlider.class("Slider");
   //--- A lot of parameter relevant stuff ---
-
 }
 
 function draw(){
@@ -167,11 +166,21 @@ function draw(){
   rotateAngle += 0.2;
 
   element.rotation(vol, rotateAngle);
-  element.showSphere(vol);
-  element.showSkull(vol);
-  element.showHeadphone(vol);
-  element.showNoid(vol);
-  element.showRecord(vol);
+  if(elementMode.value() == "Normal Sphere" || elementMode.value() == "Spiral Sphere"){
+    element.showSphere(vol);
+  }
+  if(elementMode.value() == "Skull"){
+    element.showSkull(vol);
+  }
+  if(elementMode.value() == "Headphone"){
+    element.showHeadphone(vol);
+  }
+  if(elementMode.value() == "Noid"){
+    element.showNoid(vol);
+  }
+  if(elementMode.value() == "Record"){
+    element.showRecord(vol);
+  }
   element.animation();
 
   //Display current value of each parameter
