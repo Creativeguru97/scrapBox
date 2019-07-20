@@ -11,7 +11,11 @@ let isListening = false;
 const widthX = 900;//Must be power of 2 if I use p5.FFT()
 // const resolution = 64;
 // const w = widthX / resolution;
-let element;
+let sphere;
+let element1;
+let element2;
+let element3;
+let element4;
 let rotateAngle = 0.0;
 
 //--- A lot of parameter relevant stuff ---
@@ -50,13 +54,17 @@ function setup(){
   canvas.class("canvas");
 
   angleMode(DEGREES);
-  // blend(0, 0, widthX, widthX, 0, 0, widthX, widthX, ADD);
 
   microphone = new p5.AudioIn(print("Unknown error occured"));
   // fft = new p5.FFT(0.5, resolution);//For linear
 
   // fft = new p5.FFT(0.5, 256);
-  element = new Element();
+  sphere = new Sphere();
+  element1 = new Element(skull, 0, 0, 0, 100, -100, 100);
+  element2 = new Element(headphone, 0, 0, 0, 80, -80, 80);
+  element3 = new Element(noid, -3, -3, 3, 150, -150, 150);
+  element4 = new Element(record, -3, -4, -2, 100, -100, 100);
+
 
   //--- A lot of parameter relevant stuff ---
   buttonDisplay = createDiv();
@@ -164,24 +172,22 @@ function draw(){
 
   let vol = microphone.getLevel()*sensitiveness.value();
   rotateAngle += 0.2;
+  rotateY(rotateAngle);
 
-  element.rotation(vol, rotateAngle);
   if(elementMode.value() == "Normal Sphere" || elementMode.value() == "Spiral Sphere"){
-    element.showSphere(vol);
+    sphere.showSphere(vol);
+    sphere.animation();
+  }else if(elementMode.value() == "Skull"){
+    element1.showModel(vol);
+  }else if(elementMode.value() == "Headphone"){
+    element2.showModel(vol);
+  }else if(elementMode.value() == "Noid"){
+    rotateX(-20);
+    element3.showModel(vol);
+  }else if(elementMode.value() == "Record"){
+    rotateX(0);
+    element4.showModel(vol);
   }
-  if(elementMode.value() == "Skull"){
-    element.showSkull(vol);
-  }
-  if(elementMode.value() == "Headphone"){
-    element.showHeadphone(vol);
-  }
-  if(elementMode.value() == "Noid"){
-    element.showNoid(vol);
-  }
-  if(elementMode.value() == "Record"){
-    element.showRecord(vol);
-  }
-  element.animation();
 
   //Display current value of each parameter
   sensitiveDisplay.html("Sensitiveness: " + sensitiveness.value());
