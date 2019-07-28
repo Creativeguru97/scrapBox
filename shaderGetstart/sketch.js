@@ -1,7 +1,8 @@
 let canvas;
 let gynoid;
-let rotationValue = 0;
-let addRotation;
+let rotationValueY = 0;
+let addRotationY;
+let rotationValueX = 0;
 
 let model0;
 let wave;
@@ -12,10 +13,10 @@ let bubbleSound;
 let onlyOnetime = 0;
 let index;
 
+let light;
+
 let time = 0;
 const sTime = 0;
-
-let light;
 
 function preload(){
   gynoid = loadModel("gynoid/gynoidUpper.obj");
@@ -24,7 +25,7 @@ function preload(){
   for(let i = 0; i < 7; i++){
     dropsound[i] = loadSound("sound/water/drop"+i+".mp3");
   }
-  light = loadImage("lights/light1.png");
+  light = loadImage("lights/light2.png");
 }
 
 function setup(){
@@ -37,16 +38,23 @@ function setup(){
 function draw(){
   // orbitControl(4, 4);//Mouse control
   background(0);
-  rotateX(PI*6/7);
-  addRotation = map(mouseX, 0, width, 0.02, -0.02);
-  rotationValue += addRotation;
-  rotateY(rotationValue+PI);
+  rotationValueX = map(mouseY, 0, width, -PI/20, -PI/2);
+  rotateX(rotationValueX+PI);
+  addRotationY = map(mouseX, 0, width, 0.02, -0.02);
+  rotationValueY += addRotationY;
+  rotateY(rotationValueY+PI);
+
+  push();
+    imageMode(CENTER);
+    translate(1200, 0, 3500);
+    rotateY(PI/6);
+    image(light, 0, 0, 3200, 1778);
+  pop();
 
   // lightFalloff(1, 0.0005, 0);
   pointLight(255, 190, 150, 0, 0, -1000);
 
-  noStroke();
-  model0.show(gynoid, 1.2, "specular");
+  model0.show(gynoid, 0, 0, 0, 1.2, 0.002, "specular");
 
   ambientMaterial(0, 0, 0, 255);
   wave.showWave(0.00007);

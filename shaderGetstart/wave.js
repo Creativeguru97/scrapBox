@@ -1,8 +1,8 @@
 class Wave{
   constructor(){
     this.waveParticles = [];
-    for(let x = -200; x < 200; x += 30){
-      for(let z = -150; z < 150; z += 30){
+    for(let x = -300; x < 300; x += 30){
+      for(let z = -225; z < 225; z += 30){
         this.particle = createVector();
 
         this.particle.x = x;
@@ -25,14 +25,14 @@ class Wave{
         // strokeWeight(5);
         // point(this.waveParticles[i].x, this.waveParticles[i].y, this.waveParticles[i].z);
 
-        if(i < 130 && (i+1)%10 !== 0){
+        if(i < 285 && (i+1)%15 !== 0){
           beginShape();
           stroke(255);
           noStroke();
           strokeWeight(1);
           vertex(this.waveParticles[i].x, this.waveParticles[i].y, this.waveParticles[i].z);
-          vertex(this.waveParticles[i+10].x, this.waveParticles[i+10].y, this.waveParticles[i+10].z);
-          vertex(this.waveParticles[i+11].x, this.waveParticles[i+11].y, this.waveParticles[i+11].z);
+          vertex(this.waveParticles[i+15].x, this.waveParticles[i+15].y, this.waveParticles[i+15].z);
+          vertex(this.waveParticles[i+16].x, this.waveParticles[i+16].y, this.waveParticles[i+16].z);
           vertex(this.waveParticles[i+1].x, this.waveParticles[i+1].y, this.waveParticles[i+1].z);
           endShape();
       }
