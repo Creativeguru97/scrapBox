@@ -11,7 +11,7 @@ class Model{
         ambientMaterial(0, 0, 0, 255);
       }
       push();
-        translate(0, -30+noise(this.offset)*50, 0);
+        translate(x, y+noise(this.offset)*50, z);
         scale(scaleValue);
         noStroke();
         model(modelName);

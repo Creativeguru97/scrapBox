@@ -19,7 +19,7 @@ class Wave{
     this.offset += step;
     for(let i = 0; i < this.waveParticles.length; i++){
       let noiseVal = noise(this.waveParticles[i].x * this.offset, this.waveParticles[i].z * this.offset);
-      this.waveParticles[i].y = -115+noiseVal*45;
+      this.waveParticles[i].y = -130+noiseVal*45;
         // fill(255);
         // stroke(255);
         // strokeWeight(5);
