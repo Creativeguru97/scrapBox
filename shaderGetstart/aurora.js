@@ -13,7 +13,7 @@ class Aurora{
     this.stepY = stepY;
 
     this.rowLength = (this.endY+this.positionY) - (this.startY+this.positionY);
-    print(this.rowLength);
+    // print(this.rowLength);
 
     this.auroraParticles = [];
     for(let x = this.startX+this.positionX; x < this.endX+this.positionX; x += this.stepX){
@@ -26,17 +26,18 @@ class Aurora{
         this.auroraParticles.push(this.particle);
       }
     }
-    print(this.auroraParticles);
+    // print(this.auroraParticles);
     this.offset = 0.0001;
   }
 
   show(){
     for(let i = this.auroraParticles.length-1; i > 0; i--){
-      beginShape();
-      stroke(155, 255, 50);
-      strokeWeight(50);
-
       let noiseVal = noise(this.auroraParticles[i].x * this.offset);
+      let auroraHue = map(i, 0, this.auroraParticles.length, 100, 150);
+      stroke(auroraHue*(1+noiseVal), 255, 255);
+      strokeWeight(300);
+
+
       this.auroraParticles[i].z = noiseVal*20000;
       if(i%20 == 0){
         this.offset += 0.000000001;

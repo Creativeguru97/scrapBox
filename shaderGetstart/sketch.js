@@ -15,37 +15,39 @@ let bubbleSound;
 let onlyOnetime = 0;
 let index;
 
-let light;
+let solor;
 let cameraY;
 
 let aurora;
+let stars;
 
 let time = 0;
 const sTime = 0;
 
+
 function preload(){
-  gynoid = loadModel("gynoid/gynoidUpper.obj");
+  gynoid = loadModel("gynoid/gynoid2.obj");
   mountain = loadModel("mountain/mountain.obj");
   ambientSound = loadSound("sound/after-death-world.mp3");
   bubbleSound = loadSound("sound/bubble.mp3");
   for(let i = 0; i < 7; i++){
     dropsound[i] = loadSound("sound/water/drop"+i+".mp3");
   }
-  light = loadImage("lights/light2.png");
+  solor = loadImage("lights/light2.png");
 }
 
 function setup(){
-  canvas = createCanvas(1200, 800, WEBGL);
+  canvas = createCanvas(windowWidth, windowHeight, WEBGL);
   canvas.id("canvas");
-  perspective(PI / 3.0, width / height, 1, 50000);
+  perspective(PI / 3.0, width / height, 1, 70000);
   wave = new Wave();
   model0 = new Model();
   model1 = new Model();
-  aurora = new Aurora(-3000, 10000, 10000, -60000, 1000, 0, 20000, 300, 10000);
-  // noiseSeed(99);
+  aurora = new Aurora(-3000, 8000, 10000, -60000, 1000, 0, 15000, 300, 7500);
+  stars = new Stars();
 }
 
-//Resize the canvas every time window size changed.
+// Resize the canvas every time window size changed.
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
@@ -66,28 +68,36 @@ function draw(){
   rotateY(rotationValueY+PI);
 
   push();
+  colorMode(HSB);
+  stars.show();
+  pop();
+
+  push();
     rotateY(-PI/8);
     colorMode(HSB);
-    aurora.show();
+    // aurora.show();
   pop();
 
   //Show white solor
   push();
     imageMode(CENTER);
-    translate(1200, 0, 3500);
-    rotateY(PI/6);
-    image(light, 0, 0, 3200, 1778);
+    translate(3000, 500, 12000);
+    rotateY(PI/7);
+    image(solor, 0, 0, 6400*1.5, 3556*1.5);
   pop();
 
 
   //Show mountain
   push();
     rotateY(-PI*2.6/4);
-    model1.show(mountain, 0, -500, 0, 1000, 0, "specular");
+    directionalLight(255, 255, 255, 0, -1, 0);
+    model1.show(mountain, 0, -1200, 0, 3000, 0, "specular");
   pop();
 
   //Show woman
-  pointLight(255, 190, 150, 0, 0, -1000);
+  pointLight(255, 255, 255, 0, 0, -1000);
+  // pointLight(0, 255, 255, 0, 0, -1000);
+  // pointLight(255, 0, 255, 0, 0, -1000);
   model0.show(gynoid, 0, -30, 0, 1.2, 0.002, "specular");
 
   //Show wave surface
