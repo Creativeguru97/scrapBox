@@ -30,6 +30,7 @@ function windowResized() {
 
 
 function draw(){
+  // orbitControl(4, 4);
   background(0);
   // stars.show();
   wave.showWave(0.01);
