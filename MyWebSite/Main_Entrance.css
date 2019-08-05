@@ -1,0 +1,147 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body{
+	background-color: #000;
+}
+#TopDown{
+	top: 510px;
+}
+
+.navbar{
+	left: 0px;
+	position:relative;
+	/* margin: auto; */
+	height: 90px;
+}
+.navbar a{
+	display: inline;
+	border-left: 1px #FFF solid;
+	border-right: 1px #FFF solid;
+	color: #fff;
+	text-decoration: none;
+	/*Irase underline that putted default*/
+	font-family:Helvetica Neue;
+	font-weight: 50;
+	font-size: 35px;
+	padding-right: 10px;
+	padding-left: 10px;
+	margin-right:12px;
+	margin-left: 12px;
+}
+
+.container{
+	width:80%;
+	margin:auto;/*Set margin middle automatically.*/
+	padding-top: 20px;
+	overflow: hidden;/*what is this for?*/
+}
+
+
+.ShowCaseVid{
+	position:absolute;
+	background: center;
+	z-index: -1;/*it deside order of contents pile like layer*/
+	width:100%;
+	height: 500px;
+	overflow: hidden;
+	top:0;
+	left:0;
+}
+
+#video{
+	top: 0;
+	left:0;
+	width: 100%;
+	filter: blur(5px);
+}
+
+.TopDown{
+	top: 450px;
+}
+
+.head01{
+	margin-bottom: 50px;
+	left: 0px;
+	width:100%;
+	position:relative;
+}
+.head01 h1{
+	margin-bottom:0;
+	text-align: center;
+	font-family:Helvetica Neue;
+	font-weight: 50;
+	font-size: 55px;
+	color: #fff;
+}
+.container02{
+	position: relative;
+	float: left;
+	margin-top: 30px;
+	margin-left: 45px;
+	font-weight: 50;
+	font-family:Helvetica Neue;
+	font-size: 36px;
+	color: #fff;
+}
+
+
+.MyPhoto{
+	margin:30px;
+	position: relative;
+	float:right;
+}
+
+.fracture{
+	display:grid;
+	grid-template-columns: 2fr 1fr;
+	grid-gap:0.5em;
+	padding-bottom: 60px;
+
+}
+
+.head02{
+	margin-top: 100px;
+	margin:auto;
+	margin-bottom: 50px;
+	left: 0px;
+	width:100%;
+	position:relative;
+}
+.head02 h1{
+	margin-bottom:0;
+	text-align: center;
+	font-family:Helvetica Neue;
+	font-weight: 50;
+	font-size: 55px;
+	color: #fff;
+}
+
+
+.MeRisePhoto02{
+	position: relative;
+	background:url("Footages/IMG_5477.JPG") no-repeat center;
+	background-attachment: fixed;
+	height: 500px;
+
+}
+
+
+.container03{
+	position: relative;
+	float: left;
+	margin: auto;
+	margin: 16px;
+	margin-bottom: 150px;
+	font-weight: 50;
+	font-family:Helvetica Neue;
+	font-size: 22px;
+	color: #fff;
+}
+
+.High{
+	position: relative;
+	background:url("Footages/Club01.jpg") no-repeat center;
+	background-attachment: fixed;
+	height: 400px;
+}
