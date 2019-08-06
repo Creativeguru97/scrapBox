@@ -19,13 +19,13 @@
 }
 
 .Selector{
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  /* -webkit-appearance: none;
+  -moz-appearance: none; */
+  text-align: center;
   color: #fff;
   background: none;
   border: 1px solid #fff;
   font-size: 10pt;
-  text-align: center;
   width: 160px;
   margin: 10px;
   margin-bottom: 10px;
@@ -88,4 +88,5 @@ body {
   background-color: #000;
   font-family: Helvetica, Arial, sans-serif;
   font-weight:100;
+
 }

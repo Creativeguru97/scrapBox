@@ -13,6 +13,7 @@ body{
 	position:relative;
 	/* margin: auto; */
 	height: 90px;
+	z-index: 0;
 }
 .navbar a{
 	display: inline;
@@ -22,12 +23,16 @@ body{
 	text-decoration: none;
 	/*Irase underline that putted default*/
 	font-family:Helvetica Neue;
-	font-weight: 50;
+	font-weight: 100;
 	font-size: 35px;
 	padding-right: 10px;
 	padding-left: 10px;
 	margin-right:12px;
 	margin-left: 12px;
+	transition: all .2s ease-in-out;
+}
+a:hover{
+	text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff,0px 0px 4px #fff,0px 0px 4px #fff,0px 0px 6px #fff;
 }
 
 .container{
@@ -37,27 +42,37 @@ body{
 	overflow: hidden;/*what is this for?*/
 }
 
+.logos{
+	/* -webkit-margin-before:auto;
+	-webkit-margin-after:auto; */
+	margin: auto;
+	margin-top: 100px;
+	margin-bottom: 100px;
+	/* width: 100%; */
+	width: 50%;
 
-.ShowCaseVid{
-	position:absolute;
-	background: center;
-	z-index: -1;/*it deside order of contents pile like layer*/
-	width:100%;
-	height: 500px;
-	overflow: hidden;
-	top:0;
-	left:0;
 }
+
+.logo{
+	margin-left: 40px;
+	margin-right: 40px;
+	height: 30px;
+	transition: all .2s ease-in-out;
+}
+.logo:hover{
+	transform: scale(1.04);
+}
+
 
 #video{
 	top: 0;
 	left:0;
 	width: 100%;
-	filter: blur(5px);
+	filter: blur(3px);
 }
 
 .TopDown{
-	top: 450px;
+	top: 10px;
 }
 
 .head01{
@@ -77,9 +92,9 @@ body{
 .container02{
 	position: relative;
 	float: left;
-	margin-top: 30px;
+	margin-top: 50px;
 	margin-left: 45px;
-	font-weight: 50;
+	font-weight: 100;
 	font-family:Helvetica Neue;
 	font-size: 36px;
 	color: #fff;
@@ -87,9 +102,12 @@ body{
 
 
 .MyPhoto{
-	margin:30px;
+	margin-top:60px;
+	margin-right:60px;
 	position: relative;
 	float:right;
+	border: 3px #fff solid;
+	border-radius: 15px;
 }
 
 .fracture{
@@ -97,7 +115,6 @@ body{
 	grid-template-columns: 2fr 1fr;
 	grid-gap:0.5em;
 	padding-bottom: 60px;
-
 }
 
 .head02{
@@ -112,20 +129,10 @@ body{
 	margin-bottom:0;
 	text-align: center;
 	font-family:Helvetica Neue;
-	font-weight: 50;
+	font-weight: 100;
 	font-size: 55px;
 	color: #fff;
 }
-
-
-.MeRisePhoto02{
-	position: relative;
-	background:url("Footages/IMG_5477.JPG") no-repeat center;
-	background-attachment: fixed;
-	height: 500px;
-
-}
-
 
 .container03{
 	position: relative;

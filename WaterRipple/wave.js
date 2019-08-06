@@ -59,14 +59,14 @@ class Wave{
         //--- Wave ---
         let noiseVal = noise(this.zOffset, this.xOffset);
         //------------
-        this.particle.y = 150+map(noiseVal, 0, 1, -15, 15)+this.currentWaveAdd[x][z];
+        this.particle.y = 120+map(noiseVal, 0, 1, -15, 15)+this.currentWaveAdd[x][z];
         this.particle.z = 350+z*this.scl -this.rows*this.scl/2;
         this.waveParticles[x][z] = this.particle;
         this.zOffset += 0.1;
       }
       this.xOffset += 0.1;
     }
-    
+
     if(displayMode.value() == "Line mode"){
       this.lineMode();
     }else if(displayMode.value() == "Point mode"){
@@ -111,6 +111,7 @@ class Wave{
     for(let i = 1; i < this.cols-1; i++){
       for(let j = 1; j < this.rows-1; j++){
         let hue = map(i+j+noise(this.zOffset, this.xOffset)*50, 0, this.cols+this.rows+50, 140, 350);
+        // let hue = map(this.currentWaveAdd[x][z], 200, 300, 0, 350);
         let brightness = map(j, 0, this.rows, 0, 255);
         let weight = map(this.waveParticles[i][j].y, 140, 160, 15, 1);
 
@@ -125,6 +126,7 @@ class Wave{
     for(let i = 1; i < this.cols-1; i+=1){
       for(let j = 1; j < this.rows-1; j+=1){
         let hue = map(i+j+noise(this.zOffset, this.xOffset)*50, 0, this.cols+this.rows+50, 140, 350);
+        // let hue = map(this.waveParticles[i][j].y, 140, 180, 140, 200);
         let brightness = map(j, 0, this.rows, 0, 255);
         // let weight = map(this.waveParticles[i][j].y, 80, 220, 15, 0);
 

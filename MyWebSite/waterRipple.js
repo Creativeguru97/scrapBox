@@ -1,4 +1,5 @@
 let waterRippleCanvas;
+
 let elementMode;
 let displayMode;
 
@@ -16,9 +17,9 @@ let bubbleSound;
 let dropsound = [];
 
 function preload(){
-  bubbleSound = loadSound("sound/bubble.mp3");
+  bubbleSound = loadSound("sounds/bubble.mp3");
   for(let i = 0; i < 7; i++){
-    dropsound[i] = loadSound("sound/water/drop"+i+".mp3");
+    dropsound[i] = loadSound("sounds/water/drop"+i+".mp3");
   }
 }
 
@@ -51,7 +52,7 @@ function windowResized() {
 
 function draw(){
   clear();
-  
+
   if(elementMode.value() == "Plane"){
     wave.showWave(0.01);
   }else if(elementMode.value() == "Spherical"){
