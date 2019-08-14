@@ -156,7 +156,7 @@ function setup(){
 
   pointWeightDisplay = createDiv();
   pointWeightDisplay.class("Display");
-  pointWeightDisplay.id("pointsliderMargin");
+  pointWeightDisplay.id("sliderMargin");
   pointWeightSlider = createSlider(0, 10, 0, 1);
   pointWeightSlider.class("Slider");
   //--- A lot of parameter relevant stuff ---

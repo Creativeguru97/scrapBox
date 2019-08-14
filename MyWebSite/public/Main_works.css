@@ -68,7 +68,7 @@ a:hover{
 	color: #fff;
 }
 
-.ProfileWrapper{
+.WorksWrapper{
 	z-index: 1;
 	top: 350px;
 	left: 25%;
@@ -108,22 +108,22 @@ a:hover{
 }
 
 .work:hover{
-	transform: scale(1.02);
+	transform: scale(1.03);
 }
 
 
-.ProfileText{
+.WorkDescription{
 	margin: 30px;
 	margin-left: 10px;
 	width:400px;
 }
-.ProfileText p{
+.WorkDescription p{
 	font-weight: 200;
 	font-family:Helvetica Neue;
 	font-size: 18px;
 	color: #fff;
 }
-.ProfileText h3{
+.WorkDescription h3{
 	margin: 8px;
 	font-weight: 300;
 	font-family:Helvetica Neue;

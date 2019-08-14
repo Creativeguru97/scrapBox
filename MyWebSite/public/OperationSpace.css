@@ -12,6 +12,14 @@
   z-index: -1;
 }
 
+#higherDimentionCanvas{
+  position: fixed;
+  /* top: 180px; */
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
+
 .Display{
   color: #fff;
   margin-left: 20px;
@@ -69,7 +77,7 @@
   margin-bottom: 3px;
 }
 
-#pointsliderMargin{
+#sliderMargin{
   margin-top: 20px;
 }
 
