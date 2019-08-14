@@ -173,29 +173,4 @@ void draw3DLine(){
   for(int i = 0; i < 8; i++){
     connect(0, i, i + 8, line);
   }
-  
-  //alternative
-  //for(int i = 0; i < points.length; i++){
-  //  if(i == 3){
-  //    connect(3, 0, line);
-  //  }else if(i == 7){
-  //    connect(7, 4, line);
-  //  }else if(i == 11){
-  //    connect(11, 8, line);
-  //  }else if(i == 15){
-  //    connect(15, 12, line);
-  //  }else{
-  //    connect(i, i+1, line);
-  //  }
-
-  //  if(i < 4){
-  //     connect(i, i + 4, line);
-  //  }else if(i >= 8 && i < 12){
-  //     connect(i, i + 4, line);
-  //  }
-    
-  //  if(i < 8){
-  //    connect(i, i + 8, line);
-  //  }
-  //}
 }
