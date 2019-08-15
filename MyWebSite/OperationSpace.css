@@ -1,6 +1,7 @@
 
 #SoundReactiveCanvas{
   position: fixed;
+  top: 80px;
   left: 300px;
   /* z-index: -1; */
 }
