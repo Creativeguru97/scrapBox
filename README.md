@@ -1,4 +1,4 @@
 # InterestingStuff
 Play around with algorithms
 
-Enjoy!!!!!! If don't enjoy, I gonna get mad bro!!!!!!!!
+Enjoy!!!!!! If you don't enjoy, I gonna be mad brooo!
