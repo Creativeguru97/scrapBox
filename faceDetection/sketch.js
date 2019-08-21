@@ -1,9 +1,26 @@
 const video = document.getElementById("video");
 let detections;
-let expressions;
 
+//Emotional states
+let expressions;
+let neutral;
+let happy;
+let angry;
+let sad;
+let disgusted;
+let surprised;
+let fearful;
+
+let faceAPICanvas;
+
+let canvas0;
+let canvas1;
 let hudCanvas;
-let hudCanvas2;
+let gridCanvas;
+
+let button;
+let microphone;
+let isListening = false;
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri("/models/"),
@@ -12,23 +29,23 @@ Promise.all([
   faceapi.nets.faceExpressionNet.loadFromUri("/models/")
 ])
 
-navigator.mediaDevices.getUserMedia({video:{width: 400, height: 300}})
-.then(function(mediaStream) {
+navigator.mediaDevices.getUserMedia({video:{width: 720, height: 405}})
+.then(mediaStream => {
   var video = document.querySelector('video');
   video.srcObject = mediaStream;
   // video.onloadedmetadata = function(e) {
   //   video.play();
   // };
 })
-.catch(function(err) { console.log(err.name + ": " + err.message); });
+.catch((err) => { console.log(err.name + ": " + err.message); });
 
 video.addEventListener("play", () => {
   //create face api canvas !
-  const canvas = faceapi.createCanvasFromMedia(video)
-  document.body.append(canvas);
+  faceAPICanvas = faceapi.createCanvasFromMedia(video)
+  document.body.append(faceAPICanvas);
   const displaySize = {width: video.width, height: video.height}
 
-  faceapi.matchDimensions(canvas, displaySize)
+  faceapi.matchDimensions(faceAPICanvas, displaySize)
 
   setInterval(async () => {
     detections = await faceapi.detectAllFaces(
@@ -37,48 +54,173 @@ video.addEventListener("play", () => {
       .withFaceLandmarks()
       .withFaceExpressions()
 
-      // console.log(detections[0].expressions);
       expressions = detections[0].expressions;
+      neutral = detections[0].expressions.neutral;
+      happy = detections[0].expressions.happy;
+      angry = detections[0].expressions.angry;
+      sad = detections[0].expressions.sad;
+      disgusted = detections[0].expressions.disgusted;
+      surprised = detections[0].expressions.surprised;
+      fearful = detections[0].expressions.fearful;
+
+      // console.log(detections[0].expressions);
 
       //Redraw the canvas
       const resizedDetections = faceapi.resizeResults(detections, displaySize)
       //Clear the previous canvas before redraw new frame.
-      canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height)
+      faceAPICanvas.getContext("2d").clearRect(0, 0, faceAPICanvas.width, faceAPICanvas.height)
       // faceapi.draw.drawDetections(canvas, resizedDetections)
-      faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-      faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 100)
+      faceapi.draw.drawFaceLandmarks(faceAPICanvas, resizedDetections)
+      // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+  }, 200)
 })
 
 
-function setup(){
-  createDiv();
-  hudCanvas = createCanvas(720, 405);
-  hudCanvas.id("hudCanvas");
+//----- HUD canvas -----
+canvas0 = p => {
+  p.setup = () => {
+    p.createDiv();
+    gridCanvas = p.createCanvas(720, 405);
+    gridCanvas.id("hudCanvas");
 
-  // hudCanvas2 = createCanvas(200, 200);
-  // hudCanvas2.id("hudCanvas");
+    microphone = new p5.AudioIn(p.print("Unknown error occured"));
+    // microphone.start();
+    button = p.createButton("microphone ON");
+    button.id("button");
+    button.mousePressed(p.togglePlaying);
+  }
 
+  p.togglePlaying = () => {
+  if(isListening == false){
+    microphone.start();
+    button.html("microphone OFF");
+    isListening = true;
+  }else if(isListening == true){
+    microphone.stop();
+    button.html("microphone ON");
+    isListening = false;
+  }
 }
 
-function draw(){
-  frameRate(10);
-  background(0);
-  fill(100, 220, 255);
-  grid();
-  noStroke();
-  ellipse(width/2, height/2, 40, 40);
-  console.log(expressions);
+  p.draw = () => {
+    // p.blendMode();
+    // frameRate(10);
+    p.clear();
+    p.emotionalStatesHUD(25, 240);
+    p.micHUD(630, 380);
+  }
 
-}
+  p.emotionalStatesHUD = (x, y) => {
+    // p.fill(255, 127);
+    // p.rect(x-10, y-30, 155, 185, 8);
 
-function grid(){
-  for(let i = 0; i <= width; i += 30){
-    for(let j = 0; j <= height; j+= 30){
-      stroke(0, 255, 0);
-      strokeWeight(1);
-      line(i, 0, i, height);
-      line(0, j, width, j);
+    p.noStroke();
+    p.fill(120, 210, 255);
+    // p.fill(255);
+    p.textFont('Helvetica Neue');
+    p.textSize(18);
+    p.text("Emotional States", x, y-8);
+    p.textSize(14);
+    if(expressions != undefined){
+      p.text("neutral:      "+p.nf(neutral*100, 2, 2)+"%", x, y+20);
+      p.text("happy:       "+p.nf(happy*100, 2, 2)+"%", x, y+40);
+      p.text("angry:        "+p.nf(angry*100, 2, 2)+"%", x, y+60);
+      p.text("sad:           "+p.nf(sad*100, 2, 2)+"%", x, y+80);
+      p.text("disgusted: "+p.nf(disgusted*100, 2, 2)+"%", x, y+100);
+      p.text("surprised:  "+p.nf(surprised*100, 2, 2)+"%", x, y+120);
+      p.text("fearful:       "+p.nf(fearful*100, 2, 2)+"%", x, y+140);
+    }else{
+      p.text("neutral:   ", x, y+20);
+      p.text("happy:     ", x, y+40);
+      p.text("angry:     ", x, y+60);
+      p.text("sad:       ", x, y+80);
+      p.text("disgusted: ", x, y+100);
+      p.text("surprised: ", x, y+120);
+      p.text("fearful:   ", x, y+140);
+    }
+
+  }
+
+  p.micHUD = (x, y) => {
+    let audioLevel = p.constrain(microphone.getLevel()*600, 0, 300);
+    // p.print(audioLevel);
+
+    p.fill(120, 210, 255, 110);
+    p.strokeWeight(2);
+    p.stroke(120, 210, 255, 200);
+    if(isListening == false){
+      p.rect(x, y, 30, -(5+audioLevel));
+      p.rect(x+35, y, 30, -(5+audioLevel));
+    }else if (isListening == true) {
+      p.rect(x, y, 30, -(5+audioLevel+p.random(0, 10)));
+      p.rect(x+35, y, 30, -(5+audioLevel+p.random(0, 10)));
     }
   }
+}
+
+let myp5 = new p5(canvas0, 'hudCanvas');
+
+//----- Grid canvas -----
+canvas1 = p => {
+  p.setup = () => {
+    p.createDiv();
+    gridCanvas = p.createCanvas(720, 405);
+    gridCanvas.id("gridCanvas");
+  }
+
+  p.draw = () => {
+    // frameRate(10);
+    p.background(0);
+    p.grid();
+    p.noStroke();
+    p.fill(255,0,0);
+    p.ellipse(p.mouseX, p.mouseY, 30, 30);
+    p.fill(255);
+    p.ellipse(p.width/2, p.height/2, 40, 40);
+
+    p.fill(255);
+    p.textFont('Helvetica Neue');
+    p.textSize(18);
+    // p.print(p.frameRate());
+
+  }
+
+  p.grid = () => {
+    for(let i = 0; i <= p.width; i += 30){
+      for(let j = 0; j <= p.height; j+= 30){
+        p.stroke(255);
+        p.strokeWeight(1);
+        p.line(i, 0, i, p.height);
+        p.line(0, j, p.width, j);
+      }
+    }
+  }
+}
+
+let myp52 = new p5(canvas1, 'gridCanvas');
+
+
+
+class Raya{
+  constructor(){
+    this.position = createVector(0, 0);
+    this.velocity = createVector();
+    this.acceleration = createVector();
+  }
+
+  appear(){
+    fill(255,0,0);
+    ellipse(this.position.x, this.position.y, 30, 30);
+  }
+
+  move(){
+
+  }
+
+  turn(){
+
+  }
+
+
+
 }

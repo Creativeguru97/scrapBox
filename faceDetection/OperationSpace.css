@@ -13,11 +13,27 @@ canvas {
   top: 10px;
   left: 10px;
   z-index:0;
+  border: 3px #fff solid;
+	border-radius: 10px;
+}
+
+#faceAPICanvas{
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  z-index:1;
 }
 
 #hudCanvas{
   position: absolute;
-  top: 330px;
+  top: 10px;
+  left: 10px;
+  z-index:2;
+}
+
+#gridCanvas{
+  position: absolute;
+  top: 450px;
   left: 10px;
   z-index:-1;
 }
@@ -84,6 +100,7 @@ canvas {
 }
 
 button {
+  position: absolute;
   color: #fff;
   background: none;
   border: 1px solid #fff;
@@ -92,4 +109,5 @@ button {
   margin: 10px;
   margin-bottom: 10px;
   border-radius: 16px;
+  z-index: 3;
 }
