@@ -172,7 +172,8 @@ let toVendingMachine;
 let toBookShelf;
 let isNearByUser = false;
 let isAttractedByUser = false;
-let time = 0;
+let changeBehaviorTime = 0;
+let walkTiming = 0;
 let walkSound = [];
 
 
@@ -180,7 +181,8 @@ let walkSound = [];
 canvas1 = p => {
   p.preload = () => {
     for(let i=0; i < 19; i++){
-      walkSound[i] = p.loadSound("/soundEffects/walkSound/walk"+i+".mp3");
+      // walkSound[i] = p.loadSound("/soundEffects/walkSound/walk"+i+".mp3");
+      walkSound[i] = p.loadSound("/soundEffects/walkSoundSmall/walk"+i+".mp3");
     }
 
   }
@@ -193,6 +195,7 @@ canvas1 = p => {
     user = new User();
     world = new Matrix();
     p.colorMode(p.HSB, 360, 100, 100, 100);//(Mode, Hue, Saturation, Brightness, Alpha)
+
   }
 
 //----- This is the place all interactions happen -----//
@@ -226,7 +229,7 @@ canvas1 = p => {
         raya.attracted(toUser, 50);
       }
       isAttractedByUser = true;
-      time = 0;
+      changeBehaviorTime = 0;
 
     }else if(angry*100 > 50 || microphone.getLevel()*600 > 200){
       let distUser = p5.Vector.sub(raya.position, user.position);
@@ -234,6 +237,7 @@ canvas1 = p => {
         raya.leave(toUser, 50);
       }
       isAttractedByUser = false;
+      changeBehaviorTime = 0;
     }else{
       isAttractedByUser = false;
     }
@@ -246,7 +250,7 @@ canvas1 = p => {
 
     //Loop between book shelf and vending machine.
     let seconds = p.millis()/1000;
-    if(isAttractedByUser == false && time > 300){
+    if(isAttractedByUser == false && changeBehaviorTime > 300){
       if (seconds%60 < 45){
         let dist = p5.Vector.sub(raya.position, toBookShelf);
         if(dist.mag() > 45){
@@ -262,7 +266,9 @@ canvas1 = p => {
       }
     }
 
-    time++;
+
+
+    changeBehaviorTime++;
     // p.print(p.frameRate());
   }
   //-----------------------------------------------------//
@@ -335,6 +341,7 @@ canvas1 = p => {
       let steer = p5.Vector.sub(desired, this.velocity);
       steer.limit(this.maxforce);  // Limit to maximum steering force
       this.applyForce(steer);
+      this.walk(30, 0.2, 'sustain');
     }
 
     stop(){
@@ -352,13 +359,30 @@ canvas1 = p => {
       let steer = p5.Vector.sub(desired, this.velocity);
       steer.limit(this.maxforce);  // Limit to maximum steering force
       this.applyForce(steer);
+      this.walk(30, 0.2, 'sustain');
     }
 
 
     //Sound expressions
-    walk(){
-
+    walk(frameSkip, volume, playMode){
+      walkTiming++;
+      if(walkTiming % frameSkip == 0){
+        let index = p.int(p.random(0, walkSound.length));
+        walkSound[index].playMode(playMode);
+        this.soundDirection(walkSound, index, p.width/2);
+        walkSound[index].play();
+      }
     }
+
+    soundDirection(soundFile, index, audibleDist){
+      let panning = p.map(this.position.x, 0, p.width,-1.0, 1.0);
+      soundFile[index].pan(panning);
+      let distUser = p5.Vector.sub(this.position, user.position);
+      let volume = p.map(distUser.mag(), audibleDist, 40, 0, 0.05);
+      soundFile[index].setVolume(volume);
+    }
+
+
     breathe(){
     }
     largh(){
