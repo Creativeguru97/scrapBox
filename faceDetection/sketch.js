@@ -173,14 +173,15 @@ let toBookShelf;
 let isNearByUser = false;
 let isAttractedByUser = false;
 let time = 0;
+let walkSound = [];
 
 
 //----- Grid canvas -----
 canvas1 = p => {
   p.preload = () => {
-    // for(let i=0; i < 20; i++){
-    //   let walkSound[i] = p.loadSound("1.png");
-    // }
+    for(let i=0; i < 19; i++){
+      walkSound[i] = p.loadSound("/soundEffects/walkSound/walk"+i+".mp3");
+    }
 
   }
 
@@ -356,7 +357,7 @@ canvas1 = p => {
 
     //Sound expressions
     walk(){
-      
+
     }
     breathe(){
     }
