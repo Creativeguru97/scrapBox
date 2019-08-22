@@ -109,8 +109,8 @@ canvas0 = p => {
 }
 
   p.draw = () => {
-    // p.blendMode();
-    // frameRate(10);
+    // p.blendMode(p.ADD);
+
     p.clear();
     p.emotionalStatesHUD(25, 240);
     p.micHUD(630, 380);
@@ -166,11 +166,22 @@ canvas0 = p => {
 
 let myp5 = new p5(canvas0, 'hudCanvas');
 
+let toMouse;
+let toUser;
+let toVendingMachine;
+let toBookShelf;
+let isNearByUser = false;
+let isAttractedByUser = false;
+let time = 0;
+
 
 //----- Grid canvas -----
 canvas1 = p => {
   p.preload = () => {
-    // let img = p.loadImage("1.png");
+    // for(let i=0; i < 20; i++){
+    //   let walkSound[i] = p.loadSound("1.png");
+    // }
+
   }
 
   p.setup = () => {
@@ -187,7 +198,6 @@ canvas1 = p => {
 //-----------------------------------------------------//
   p.draw = () => {
     p.background(31, 52, 97);//apricot
-    // p.background(0);
     // p.clear();
 
     //First we need set environment.
@@ -202,18 +212,56 @@ canvas1 = p => {
     raya.appear();
     raya.move();
     raya.turn();
+    raya.stop();
 
-    let toMouse = p.createVector(p.mouseX, p.mouseY);
-    let toUser = p.createVector(user.position.x, user.position.y);
-    let toVendingMachine = p.createVector(world.vendingMachinePos.x, world.vendingMachinePos.y+25);
-    let toBookShelf = p.createVector(world.bookShelfPos.x+10, world.bookShelfPos.y);
+    toUser = p.createVector(user.position.x, user.position.y);
+    toVendingMachine = p.createVector(world.vendingMachinePos.x, world.vendingMachinePos.y+25);
+    toBookShelf = p.createVector(world.bookShelfPos.x+10, world.bookShelfPos.y);
 
+    //move close or run away from user.
     if(happy > neutral){
-      raya.attracted(toUser, 50);
-      // raya.attracted(toBookShelf, 40);
-      // raya.attracted(toVendingMachine, 40);
+      let distUser = p5.Vector.sub(raya.position, user.position);
+      if(distUser.mag() > 50){
+        raya.attracted(toUser, 50);
+      }
+      isAttractedByUser = true;
+      time = 0;
+
+    }else if(angry*100 > 50 || microphone.getLevel()*600 > 200){
+      let distUser = p5.Vector.sub(raya.position, user.position);
+      if(distUser.mag() < 150){
+        raya.leave(toUser, 50);
+      }
+      isAttractedByUser = false;
+    }else{
+      isAttractedByUser = false;
     }
 
+    // if(distUser.mag() <= 70){
+    //   isNearByUser = true;
+    // }else{
+    //   isNearByUser = false;
+    // }
+
+    //Loop between book shelf and vending machine.
+    let seconds = p.millis()/1000;
+    if(isAttractedByUser == false && time > 300){
+      if (seconds%60 < 45){
+        let dist = p5.Vector.sub(raya.position, toBookShelf);
+        if(dist.mag() > 45){
+          raya.attracted(toBookShelf, 40);
+        }else{
+          raya.readBook();
+        }
+      }else if(seconds%60 > 45){
+        let dist = p5.Vector.sub(raya.position, toVendingMachine);
+        if(dist.mag() > 45){
+          raya.attracted(toVendingMachine, 40);
+        }
+      }
+    }
+
+    time++;
     // p.print(p.frameRate());
   }
   //-----------------------------------------------------//
@@ -241,7 +289,7 @@ canvas1 = p => {
       this.velocity.limit(this.maxspeed);
     }
 
-    //This is key to decide every move looking,
+    //Core movements
     applyForce(force){
       this.acceleration.add(force);
     }
@@ -275,7 +323,7 @@ canvas1 = p => {
       let desired = p5.Vector.sub(target, this.position);
       let d = desired.mag();
     // Scale with arbitrary damping within 100 pixels
-      if (d < arriveDist+100) {
+      if (d < arriveDist+80) {
         let arrivingSpeed = p.map(d, arriveDist, arriveDist+80, 0, this.maxspeed);
         desired.setMag(arrivingSpeed);
       } else {
@@ -288,7 +336,27 @@ canvas1 = p => {
       this.applyForce(steer);
     }
 
-    scared(){
+    stop(){
+      //friction simuration.
+      let friction = this.velocity.copy();
+      friction.mult(-0.02);
+      this.applyForce(friction);
+    }
+
+    leave(target, redZone){
+      let desired = p5.Vector.sub(target, this.position);
+      desired.mult(-1);
+      desired.setMag(this.maxspeed);
+
+      let steer = p5.Vector.sub(desired, this.velocity);
+      steer.limit(this.maxforce);  // Limit to maximum steering force
+      this.applyForce(steer);
+    }
+
+
+    //Sound expressions
+    walk(){
+      
     }
     breathe(){
     }
@@ -300,7 +368,7 @@ canvas1 = p => {
     }
     wearGlasses(){
     }
-    turnPage(){
+    readBook(){
     }
     spillTeaOnBook(){
     }
