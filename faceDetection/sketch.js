@@ -13,7 +13,6 @@ let fearful;
 
 let faceAPICanvas;
 
-
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri("/models/"),
   faceapi.nets.faceLandmark68Net.loadFromUri("/models/"),
@@ -54,6 +53,8 @@ video.addEventListener("play", () => {
       disgusted = detections[0].expressions.disgusted;
       surprised = detections[0].expressions.surprised;
       fearful = detections[0].expressions.fearful;
+
+
 
       // console.log(detections[0].expressions);
 
@@ -166,25 +167,75 @@ canvas0 = p => {
 
 let myp5 = new p5(canvas0, 'hudCanvas');
 
+
+//Objects
 let toMouse;
 let toUser;
 let toVendingMachine;
 let toBookShelf;
+let distUser;
+let distBookShelf;
+let distVendingMachine;
+
+let emotionStore;
+let happinessStore = [];
+let neutralStore = [];
+let angerStore = [];
+let happinessSum = 0;
+let neutralSum = 0;
+let angerSum = 0;
+let happinessLevel;
+let neutralLevel;
+let angerLevel;
+
 let isNearByUser = false;
 let isAttractedByUser = false;
 let changeBehaviorTime = 0;
-let walkTiming = 0;
+
 let walkSound = [];
+let coughSound = [];
+let flipPageSound = [];
+let breathSound;
+let sitOnChairSound;
+let putACupSound;
+let putABookSound;
+let buyDrink = [];
+
+//For event programing
+let timeLoop;
+let timeWait;
+let loopTime = 0;//60 seconds loop
+let waitingTime = 0;
+
+let walkFrame = 0;
+let breathFrame = 0;
+let sittingFrame = 0;
+let buyDrinkFrame = 0;
 
 
 //----- Grid canvas -----
 canvas1 = p => {
   p.preload = () => {
-    for(let i=0; i < 19; i++){
-      // walkSound[i] = p.loadSound("/soundEffects/walkSound/walk"+i+".mp3");
+    for(let i=0; i < 20; i++){
       walkSound[i] = p.loadSound("/soundEffects/walkSoundSmall/walk"+i+".mp3");
     }
 
+    for(let i=0; i < 4; i++){
+      coughSound[i] = p.loadSound("/soundEffects/coughSound/cough"+i+".mp3");
+    }
+
+    for(let i=0; i < 5; i++){
+      flipPageSound[i] = p.loadSound("/soundEffects/flipPage/flip"+i+".mp3");
+    }
+
+    for(let i=0; i < 5; i++){
+      buyDrink[i] = p.loadSound("/soundEffects/vendingMachine/buyDrink"+i+".mp3");
+    }
+
+    breathSound = p.loadSound("/soundEffects/breath.mp3");
+    sitOnChairSound = p.loadSound("/soundEffects/sitOnChair.mp3");
+    putACupSound = p.loadSound("/soundEffects/putACupOfTea.mp3");
+    putABookSound = p.loadSound("/soundEffects/putABook.mp3");
   }
 
   p.setup = () => {
@@ -195,6 +246,56 @@ canvas1 = p => {
     user = new User();
     world = new Matrix();
     p.colorMode(p.HSB, 360, 100, 100, 100);//(Mode, Hue, Saturation, Brightness, Alpha)
+
+    timeLoop = setInterval(() => {
+      loopTime++;
+      if(loopTime > 120){
+        loopTime = 0;
+      }
+    }, 1000);
+
+    timeWait = setInterval(() => {
+      waitingTime++;
+    }, 1000);
+
+    emotionStore = setInterval(() => {
+      happinessStore.push(happy);
+      neutralStore.push(neutral);
+      angerStore.push(angry);
+      if(happinessStore.length > 30){
+        happinessStore.splice(0, 1);//Erase index 0
+      }
+      if(neutralStore.length > 30){
+        neutralStore.splice(0, 1);//Erase index 0
+      }
+      if(angerStore.length > 30){
+        angerStore.splice(0, 1);//Erase index 0
+      }
+      for(let i=0; i<happinessStore.length; i++){
+        if(happinessStore[i] != undefined){
+          happinessSum += happinessStore[i];
+        }
+        if(neutralStore[i] != undefined){
+          neutralSum += neutralStore[i];
+        }
+        if(angerStore[i] != undefined){
+          angerSum += angerStore[i];
+        }
+      }
+
+      happinessLevel = happinessSum;
+      neutralLevel = neutralSum;
+      angerLevel = angerSum;
+
+      happinessSum = 0;
+      neutralSum = 0;
+      angerSum = 0;
+
+      // console.log(happinessLevel);
+      // console.log(neutralLevel);
+      // console.log(angerLevel);
+
+    }, 200);
 
   }
 
@@ -217,58 +318,72 @@ canvas1 = p => {
     raya.move();
     raya.turn();
     raya.stop();
+    raya.cough(20000, 19997, 'sustain');
 
     toUser = p.createVector(user.position.x, user.position.y);
     toVendingMachine = p.createVector(world.vendingMachinePos.x, world.vendingMachinePos.y+25);
     toBookShelf = p.createVector(world.bookShelfPos.x+10, world.bookShelfPos.y);
+    distUser = p5.Vector.sub(raya.position, user.position);
+    distBookShelf = p5.Vector.sub(raya.position, toBookShelf);
+    distVendingMachine = p5.Vector.sub(raya.position, toVendingMachine);
 
-    //move close or run away from user.
-    if(happy > neutral){
-      let distUser = p5.Vector.sub(raya.position, user.position);
+    //move close or run away from user for their facial expression.
+    if(happinessLevel > neutralLevel){
       if(distUser.mag() > 50){
         raya.attracted(toUser, 50);
       }
       isAttractedByUser = true;
-      changeBehaviorTime = 0;
+      waitingTime = 0;
 
-    }else if(angry*100 > 50 || microphone.getLevel()*600 > 200){
-      let distUser = p5.Vector.sub(raya.position, user.position);
+    }else if(angerLevel > 10 || microphone.getLevel()*600 > 200){
       if(distUser.mag() < 150){
         raya.leave(toUser, 50);
       }
       isAttractedByUser = false;
-      changeBehaviorTime = 0;
+      waitingTime = 0;
     }else{
       isAttractedByUser = false;
     }
 
-    // if(distUser.mag() <= 70){
-    //   isNearByUser = true;
-    // }else{
-    //   isNearByUser = false;
-    // }
+    if(distUser.mag() <= 70){//If raya is closer than 70px
+      raya.breathe(180, 'sustain');
+
+      if(raya.velocity.x < 0.01 && raya.velocity.y < 0.01){//And if raya has been settled
+        sittingFrame++;
+
+        if(sittingFrame == 80){
+          raya.sitDown('sustain');
+        }
+
+        raya.putCupAndBookOnTable(sittingFrame, 160, 220, 'sustain');
+
+        if (sittingFrame > 200) {
+          raya.readBook(2400, 2397, 'sustain');
+        }
+
+      }
+    }else{
+      sittingFrame = 0;
+    }
 
     //Loop between book shelf and vending machine.
-    let seconds = p.millis()/1000;
-    if(isAttractedByUser == false && changeBehaviorTime > 300){
-      if (seconds%60 < 45){
-        let dist = p5.Vector.sub(raya.position, toBookShelf);
-        if(dist.mag() > 45){
+    if(isAttractedByUser == false && waitingTime > 30){
+      if (loopTime < 90){
+        if(distBookShelf.mag() > 45){
           raya.attracted(toBookShelf, 40);
         }else{
-          raya.readBook();
+          raya.readBook(2400, 2397, 'sustain');
         }
-      }else if(seconds%60 > 45){
-        let dist = p5.Vector.sub(raya.position, toVendingMachine);
-        if(dist.mag() > 45){
+      }else if(loopTime > 90){
+        if(distVendingMachine.mag() > 50){
           raya.attracted(toVendingMachine, 40);
+          buyDrinkFrame = 0;
+        }else{
+          buyDrinkFrame++;
+          raya.buySomeDrink(buyDrinkFrame, 60, 120, 140, 460, 'sustain');
         }
       }
     }
-
-
-
-    changeBehaviorTime++;
     // p.print(p.frameRate());
   }
   //-----------------------------------------------------//
@@ -341,7 +456,7 @@ canvas1 = p => {
       let steer = p5.Vector.sub(desired, this.velocity);
       steer.limit(this.maxforce);  // Limit to maximum steering force
       this.applyForce(steer);
-      this.walk(30, 0.2, 'sustain');
+      this.walk(30, 'sustain');
     }
 
     stop(){
@@ -359,42 +474,137 @@ canvas1 = p => {
       let steer = p5.Vector.sub(desired, this.velocity);
       steer.limit(this.maxforce);  // Limit to maximum steering force
       this.applyForce(steer);
-      this.walk(30, 0.2, 'sustain');
+      this.walk(30, 'sustain');
     }
 
-
     //Sound expressions
-    walk(frameSkip, volume, playMode){
-      walkTiming++;
-      if(walkTiming % frameSkip == 0){
-        let index = p.int(p.random(0, walkSound.length));
-        walkSound[index].playMode(playMode);
-        this.soundDirection(walkSound, index, p.width/2);
-        walkSound[index].play();
+    soundDirection(soundFile, index, audibleDist, ampMax){
+      let panning = p.map(this.position.x, 0, p.width,-1.0, 1.0);
+      let distUser = p5.Vector.sub(this.position, user.position);
+      let volume = p.map(distUser.mag(), audibleDist, 40, 0, ampMax);
+      if(index == 'null'){
+        soundFile.pan(panning);
+        soundFile.setVolume(volume);
+      }else{
+        soundFile[index].pan(panning);
+        soundFile[index].setVolume(volume);
       }
     }
 
-    soundDirection(soundFile, index, audibleDist){
-      let panning = p.map(this.position.x, 0, p.width,-1.0, 1.0);
-      soundFile[index].pan(panning);
-      let distUser = p5.Vector.sub(this.position, user.position);
-      let volume = p.map(distUser.mag(), audibleDist, 40, 0, 0.05);
-      soundFile[index].setVolume(volume);
+    walk(interval, mode){
+      walkFrame++;
+      if(walkFrame == interval){
+        let index = p.int(p.random(0, walkSound.length));
+        walkSound[index].playMode(mode);
+        this.soundDirection(walkSound, index, p.width/2, 0.05);
+        walkSound[index].play();
+        walkFrame = 0;
+      }
+    }
+
+    cough(possibilityRange, border, mode){
+      let num = p.random(0, possibilityRange);
+      if(num > border){
+        let index = p.int(p.random(0, coughSound.length));
+        coughSound[index].playMode(mode);
+        this.soundDirection(coughSound, index, p.width/2, 0.04);
+        coughSound[index].play();
+      }
     }
 
 
-    breathe(){
+    breathe(interval, mode){
+      breathFrame++;
+      if(breathFrame == interval){
+        breathSound.playMode(mode);
+        breathSound.setVolume(0.08);
+        breathSound.play();
+        breathFrame = 0;
+      }
     }
-    largh(){
+
+    readBook(possibilityRange, border, mode){
+      let num = p.random(0, possibilityRange);
+      if(num > border){
+        let index = p.int(p.random(0, flipPageSound.length));
+        flipPageSound[index].playMode(mode);
+        if(distUser.mag() <= 70){
+          flipPageSound[index].setVolume(0.05);
+        }else{
+          this.soundDirection(flipPageSound, index, p.width/2, 0.05);
+        }
+        flipPageSound[index].play();
+      }
     }
-    sitDown(){
+
+    sitDown(mode){
+      sitOnChairSound.playMode(mode);
+      sitOnChairSound.setVolume(0.01);
+      sitOnChairSound.play();
     }
+
+    putCupAndBookOnTable(countFrame, num1, num2, mode){
+      if(countFrame == num1){
+        putACupSound.playMode(mode);
+        putACupSound.setVolume(0.05);
+        putACupSound.play();
+      }else if(countFrame == num2){
+        putABookSound.playMode(mode);
+        putABookSound.setVolume(0.05);
+        putABookSound.play();
+      }
+    }
+
+    buySomeDrink(countFrame, num1, num2, num3, num4, mode){
+      let num = p.floor(p.random(0, 6));
+      if(num >= 3){
+        if(countFrame == num1){
+          buyDrink[0].playMode(mode);
+          this.soundDirection(buyDrink, 0, p.width/2, 0.05);
+          buyDrink[0].play();
+        }else if(countFrame == num2){
+          buyDrink[2].playMode(mode);
+          this.soundDirection(buyDrink, 2, p.width/2, 0.08);
+          buyDrink[2].play();
+        }else if(countFrame == num3){
+          buyDrink[3].playMode(mode);
+          this.soundDirection(buyDrink, 3, p.width/2, 0.05);
+          buyDrink[3].play();
+        }else if(countFrame == num4){
+          buyDrink[4].playMode(mode);
+          this.soundDirection(buyDrink, 4, p.width/2, 0.08);
+          buyDrink[4].play();
+        }
+      }else if(num <= 2){
+        if(countFrame == num1){
+          buyDrink[1].playMode(mode);
+          this.soundDirection(buyDrink, 1, p.width/2, 0.05);
+          buyDrink[1].play();
+        }else if(countFrame == num2+210){
+          buyDrink[2].playMode(mode);
+          this.soundDirection(buyDrink, 2, p.width/2, 0.08);
+          buyDrink[2].play();
+        }else if(countFrame == num3+210){
+          buyDrink[3].playMode(mode);
+          this.soundDirection(buyDrink, 3, p.width/2, 0.05);
+          buyDrink[3].play();
+        }else if(countFrame == num4+210){
+          buyDrink[4].playMode(mode);
+          this.soundDirection(buyDrink, 4, p.width/2, 0.08);
+          buyDrink[4].play();
+        }
+      }
+
+    }
+
+    largh(mode){
+      
+    }
+
     standUp(){
+
     }
-    wearGlasses(){
-    }
-    readBook(){
-    }
+
     spillTeaOnBook(){
     }
     annoy(){
@@ -455,7 +665,6 @@ canvas1 = p => {
         h
       );
     }
-
   }
 
 }
