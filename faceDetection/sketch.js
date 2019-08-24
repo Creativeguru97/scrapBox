@@ -13,60 +13,60 @@ let fearful;
 
 let faceAPICanvas;
 
-Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("/models/"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models/"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/models/"),
-  faceapi.nets.faceExpressionNet.loadFromUri("/models/")
-])
-
-navigator.mediaDevices.getUserMedia({video:{width: 720, height: 405}})
-.then(mediaStream => {
-  var video = document.querySelector('video');
-  video.srcObject = mediaStream;
-  // video.onloadedmetadata = function(e) {
-  //   video.play();
-  // };
-})
-.catch((err) => { console.log(err.name + ": " + err.message); });
-
-video.addEventListener("play", () => {
-  //create face api canvas !
-  faceAPICanvas = faceapi.createCanvasFromMedia(video)
-  document.body.append(faceAPICanvas);
-  const displaySize = {width: video.width, height: video.height}
-
-  faceapi.matchDimensions(faceAPICanvas, displaySize)
-
-  setInterval(async () => {
-    detections = await faceapi.detectAllFaces(
-      video,
-      new faceapi.TinyFaceDetectorOptions())
-      .withFaceLandmarks()
-      .withFaceExpressions()
-
-      expressions = detections[0].expressions;
-      neutral = detections[0].expressions.neutral;
-      happy = detections[0].expressions.happy;
-      angry = detections[0].expressions.angry;
-      sad = detections[0].expressions.sad;
-      disgusted = detections[0].expressions.disgusted;
-      surprised = detections[0].expressions.surprised;
-      fearful = detections[0].expressions.fearful;
-
-
-
-      // console.log(detections[0].expressions);
-
-      //Redraw the canvas
-      const resizedDetections = faceapi.resizeResults(detections, displaySize)
-      //Clear the previous canvas before redraw new frame.
-      faceAPICanvas.getContext("2d").clearRect(0, 0, faceAPICanvas.width, faceAPICanvas.height)
-      // faceapi.draw.drawDetections(canvas, resizedDetections)
-      faceapi.draw.drawFaceLandmarks(faceAPICanvas, resizedDetections)
-      // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-  }, 200)
-})
+// Promise.all([
+//   faceapi.nets.tinyFaceDetector.loadFromUri("/models/"),
+//   faceapi.nets.faceLandmark68Net.loadFromUri("/models/"),
+//   faceapi.nets.faceRecognitionNet.loadFromUri("/models/"),
+//   faceapi.nets.faceExpressionNet.loadFromUri("/models/")
+// ])
+//
+// navigator.mediaDevices.getUserMedia({video:{width: 720, height: 405}})
+// .then(mediaStream => {
+//   var video = document.querySelector('video');
+//   video.srcObject = mediaStream;
+//   // video.onloadedmetadata = function(e) {
+//   //   video.play();
+//   // };
+// })
+// .catch((err) => { console.log(err.name + ": " + err.message); });
+//
+// video.addEventListener("play", () => {
+//   //create face api canvas !
+//   faceAPICanvas = faceapi.createCanvasFromMedia(video)
+//   document.body.append(faceAPICanvas);
+//   const displaySize = {width: video.width, height: video.height}
+//
+//   faceapi.matchDimensions(faceAPICanvas, displaySize)
+//
+//   setInterval(async () => {
+//     detections = await faceapi.detectAllFaces(
+//       video,
+//       new faceapi.TinyFaceDetectorOptions())
+//       .withFaceLandmarks()
+//       .withFaceExpressions()
+//
+//       expressions = detections[0].expressions;
+//       neutral = detections[0].expressions.neutral;
+//       happy = detections[0].expressions.happy;
+//       angry = detections[0].expressions.angry;
+//       sad = detections[0].expressions.sad;
+//       disgusted = detections[0].expressions.disgusted;
+//       surprised = detections[0].expressions.surprised;
+//       fearful = detections[0].expressions.fearful;
+//
+//
+//
+//       // console.log(detections[0].expressions);
+//
+//       //Redraw the canvas
+//       const resizedDetections = faceapi.resizeResults(detections, displaySize)
+//       //Clear the previous canvas before redraw new frame.
+//       faceAPICanvas.getContext("2d").clearRect(0, 0, faceAPICanvas.width, faceAPICanvas.height)
+//       // faceapi.draw.drawDetections(canvas, resizedDetections)
+//       faceapi.draw.drawFaceLandmarks(faceAPICanvas, resizedDetections)
+//       // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+//   }, 200)
+// })
 
 
 //------- Condortable lovely p5 world -------//
@@ -81,7 +81,6 @@ let button;
 let microphone;
 let isListening = false;
 
-let raya;
 
 //----- HUD canvas -----
 canvas0 = p => {
@@ -167,7 +166,6 @@ canvas0 = p => {
 
 let myp5 = new p5(canvas0, 'hudCanvas');
 
-
 //Objects
 let toMouse;
 let toUser;
@@ -242,9 +240,21 @@ canvas1 = p => {
     p.createDiv();
     gridCanvas = p.createCanvas(720, 405);
     gridCanvas.id("gridCanvas");
-    raya = new Agent();
+    rayaRadius = 15;
+    raya = new Agent(p.random(80, p.width-80), p.random(70, p.height-40), rayaRadius);
     user = new User();
-    world = new Matrix();
+    grid = new MatrixObject();
+    bookShelf0 = new MatrixObject();
+    bookShelf1 = new MatrixObject();
+    bookShelf2= new MatrixObject();
+    vendingMachine = new MatrixObject();
+
+    leftWall = new MatrixObject();
+    rightUpperWall = new MatrixObject();
+    rightLowerWall = new MatrixObject();
+    topWall = new MatrixObject();
+    bottomWall = new MatrixObject();
+
     p.colorMode(p.HSB, 360, 100, 100, 100);//(Mode, Hue, Saturation, Brightness, Alpha)
 
     timeLoop = setInterval(() => {
@@ -299,6 +309,11 @@ canvas1 = p => {
 
   }
 
+  p.mousePressed = () => {
+    let psychoKinesis = p.createVector(0, -50);
+    raya.applyForce(psychoKinesis);
+  }
+
 //----- This is the place all interactions happen -----//
 //-----------------------------------------------------//
   p.draw = () => {
@@ -306,9 +321,16 @@ canvas1 = p => {
     // p.clear();
 
     //First we need set environment.
-    world.grid();
-    world.vendingMachine(p.width*3/4, 20, 100, 40);
-    world.bookShelf(10, p.height/3, 20, 120);
+    grid.grid();
+    topWall.wall(0, 0, p.width-40, 20);
+    bottomWall.wall(0, p.height-20, p.width-40, 20);
+    leftWall.wall(0, p.height/4, 40, p.height*3/4-20);
+    rightUpperWall.wall(p.width-60, 20, 20, p.height/2-120);
+    rightLowerWall.wall(p.width-60, p.height/2+80, 20, p.height/2-100);
+    vendingMachine.vendingMachine(p.width*3/4, 40, 100, 40);
+    bookShelf0.bookShelf(50, p.height*4/8, 20, 100);
+    bookShelf1.bookShelf(50, p.height*6/8, 20, 100);
+    bookShelf2.bookShelf(120, p.height-30, 100, 20);
 
     //Next we set user existance.
     user.appear();
@@ -316,13 +338,14 @@ canvas1 = p => {
     //then we design the agent behavior along with all above.
     raya.appear();
     raya.move();
-    raya.turn();
+    raya.turn(60+rayaRadius, 60+rayaRadius, 20+rayaRadius, 20+rayaRadius);
     raya.stop();
     raya.cough(20000, 19997, 'sustain');
 
     toUser = p.createVector(user.position.x, user.position.y);
-    toVendingMachine = p.createVector(world.vendingMachinePos.x, world.vendingMachinePos.y+25);
-    toBookShelf = p.createVector(world.bookShelfPos.x+10, world.bookShelfPos.y);
+    toVendingMachine = p.createVector(vendingMachine.vendingMachinePos.x, vendingMachine.vendingMachinePos.y+25);
+    toBookShelf = p.createVector(bookShelf0.bookShelfPos.x+10, bookShelf0.bookShelfPos.y);
+
     distUser = p5.Vector.sub(raya.position, user.position);
     distBookShelf = p5.Vector.sub(raya.position, toBookShelf);
     distVendingMachine = p5.Vector.sub(raya.position, toVendingMachine);
@@ -367,7 +390,7 @@ canvas1 = p => {
     }
 
     //Loop between book shelf and vending machine.
-    if(isAttractedByUser == false && waitingTime > 30){
+    if(isAttractedByUser == false && waitingTime > 3){
       if (loopTime < 90){
         if(distBookShelf.mag() > 45){
           raya.attracted(toBookShelf, 40);
@@ -380,7 +403,7 @@ canvas1 = p => {
           buyDrinkFrame = 0;
         }else{
           buyDrinkFrame++;
-          raya.buySomeDrink(buyDrinkFrame, 60, 120, 140, 460, 'sustain');
+          raya.buySomeDrink(buyDrinkFrame, 60, 120, 140, 350, 'sustain');
         }
       }
     }
@@ -391,17 +414,18 @@ canvas1 = p => {
 
 
   class Agent{
-    constructor(){
-      this.position = p.createVector(p.random(40, p.width-20), p.random(50, p.height-20));
+    constructor(x, y, radius){
+      this.position = p.createVector(x, y);
       this.velocity = p.createVector(0, 0);
       this.acceleration = p.createVector(0, 0);
       this.maxspeed = 1;
       this.maxforce = 0.025;
+      this.radius = radius;
     }
 
     appear(){
       p.fill(0,255,255);//Red in HSB mode
-      p.ellipse(this.position.x, this.position.y, 30, 30);
+      p.ellipse(this.position.x, this.position.y, this.radius*2, this.radius*2);
     }
 
     move(){
@@ -416,26 +440,26 @@ canvas1 = p => {
       this.acceleration.add(force);
     }
 
-    turn(){
+    turn(leftBorder, rightBorder, topBorder, bottomBorder){
       //Outer walls
-      if(this.position.x > p.width-20){
-        this.position.x = p.width-20;
+      if(this.position.x > p.width-rightBorder){
+        this.position.x = p.width-rightBorder;
         this.velocity.x = this.velocity.x*-1;
         // this.acceleration.x = this.acceleration.x*-1;
       }
-      if(this.position.x < 20){
-        this.position.x = 20;
+      if(this.position.x < leftBorder){
+        this.position.x = leftBorder;
         this.velocity.x = this.velocity.x*-1;
         // this.acceleration.x = this.acceleration.x*-1;
       }
 
-      if(this.position.y > p.height-24){
-        this.position.y = p.height-24;
+      if(this.position.y > p.height-bottomBorder){
+        this.position.y = p.height-bottomBorder;
         this.velocity.y = this.velocity.y*-1;
         // this.acceleration.y = this.acceleration.y*-1;
       }
-      if(this.position.y < 24){
-        this.position.y = 24;
+      if(this.position.y < topBorder){
+        this.position.y = topBorder;
         this.velocity.y = this.velocity.y*-1;
         // this.acceleration.y = this.acceleration.y*-1;
       }
@@ -556,49 +580,27 @@ canvas1 = p => {
     }
 
     buySomeDrink(countFrame, num1, num2, num3, num4, mode){
-      let num = p.floor(p.random(0, 6));
-      if(num >= 3){
-        if(countFrame == num1){
-          buyDrink[0].playMode(mode);
-          this.soundDirection(buyDrink, 0, p.width/2, 0.05);
-          buyDrink[0].play();
-        }else if(countFrame == num2){
-          buyDrink[2].playMode(mode);
-          this.soundDirection(buyDrink, 2, p.width/2, 0.08);
-          buyDrink[2].play();
-        }else if(countFrame == num3){
-          buyDrink[3].playMode(mode);
-          this.soundDirection(buyDrink, 3, p.width/2, 0.05);
-          buyDrink[3].play();
-        }else if(countFrame == num4){
-          buyDrink[4].playMode(mode);
-          this.soundDirection(buyDrink, 4, p.width/2, 0.08);
-          buyDrink[4].play();
-        }
-      }else if(num <= 2){
         if(countFrame == num1){
           buyDrink[1].playMode(mode);
           this.soundDirection(buyDrink, 1, p.width/2, 0.05);
           buyDrink[1].play();
-        }else if(countFrame == num2+210){
+        }else if(countFrame == num2+180){
           buyDrink[2].playMode(mode);
           this.soundDirection(buyDrink, 2, p.width/2, 0.08);
           buyDrink[2].play();
-        }else if(countFrame == num3+210){
+        }else if(countFrame == num3+180){
           buyDrink[3].playMode(mode);
           this.soundDirection(buyDrink, 3, p.width/2, 0.05);
           buyDrink[3].play();
-        }else if(countFrame == num4+210){
+        }else if(countFrame == num4+180){
           buyDrink[4].playMode(mode);
           this.soundDirection(buyDrink, 4, p.width/2, 0.08);
           buyDrink[4].play();
         }
-      }
-
     }
 
     largh(mode){
-      
+
     }
 
     standUp(){
@@ -614,17 +616,17 @@ canvas1 = p => {
 
   class User{
     constructor(){
-      this.position = p.createVector(p.width/2, p.height/2);
+      this.position = p.createVector(p.width/2, p.height*3/4);
     }
 
     appear(){
       p.fill(255, 0, 255);
-      p.ellipse(p.width/2, p.height/2, 40, 40);
+      p.ellipse(this.position.x, this.position.y, 40, 40);
     }
   }
   //----- Raya class end -----
 
-  class Matrix{
+  class MatrixObject{
     constructor(){
       this.vendingMachinePos;
       this.bookShelfPos;
@@ -646,11 +648,7 @@ canvas1 = p => {
       p.fill(208, 52, 85);
       p.noStroke();
       p.rectMode(p.CENTER);
-      p.rect(
-        this.vendingMachinePos.x,
-        this.vendingMachinePos.y,
-        w,h,5
-      );
+      p.rect(this.vendingMachinePos.x, this.vendingMachinePos.y, w, h, 5);
     }
 
     bookShelf(x, y, w, h){
@@ -658,13 +656,17 @@ canvas1 = p => {
       p.fill(30, 53, 58);//cafe au lait
       p.noStroke();
       p.rectMode(p.CENTER);
-      p.rect(
-        this.bookShelfPos.x,
-        this.bookShelfPos.y,
-        w,
-        h
-      );
+      p.rect(this.bookShelfPos.x, this.bookShelfPos.y, w, h);
     }
+
+    wall(x, y, w, h){
+      p.fill(32, 37, 98);//cafe au lait
+      p.stroke(32, 46, 77);
+      p.strokeWeight(1);
+      p.rectMode(p.CORNER);
+      p.rect(x, y, w, h, 4);
+    }
+
   }
 
 }
