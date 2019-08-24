@@ -11,7 +11,7 @@ let isListening = false;
 
 
 //----- HUD canvas -----
-canvas0 = p => {
+canvas0 = p => { //let canvas0 = function(p){...
   p.setup = () => {
     p.createDiv();
     gridCanvas = p.createCanvas(720, 405);

@@ -1,3 +1,6 @@
+//------- Condortable lovely p5 world -------//
+//-------------------------------------------//
+
 let canvas1;
 let gridCanvas;
 
