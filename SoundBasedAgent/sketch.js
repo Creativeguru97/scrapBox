@@ -55,7 +55,6 @@ video.addEventListener("play", () => {
       fearful = detections[0].expressions.fearful;
 
 
-
       // console.log(detections[0].expressions);
 
       //Redraw the canvas

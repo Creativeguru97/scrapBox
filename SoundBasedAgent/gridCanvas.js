@@ -159,6 +159,7 @@ canvas1 = p => {
     raya.applyForce(psychoKinesis);
   }
 
+
 //----- This is the place all interactions happen -----//
 //-----------------------------------------------------//
   p.draw = () => {
@@ -179,6 +180,7 @@ canvas1 = p => {
 
     //Next we set user existance.
     user.appear();
+
 
     //then we design the agent behavior along with all above.
     raya.appear();
@@ -235,7 +237,7 @@ canvas1 = p => {
     }
 
     //Loop between book shelf and vending machine.
-    if(isAttractedByUser == false && waitingTime > 3){
+    if(isAttractedByUser == false && waitingTime > 30){
       if (loopTime < 90){
         if(distBookShelf.mag() > 45){
           raya.attracted(toBookShelf, 40);
@@ -348,6 +350,7 @@ canvas1 = p => {
 
     //Sound expressions
     soundDirection(soundFile, index, audibleDist, ampMax){
+      //This takes a lot of resouces I guess, may be I use int here.
       let panning = p.map(this.position.x, 0, p.width,-1.0, 1.0);
       let distUser = p5.Vector.sub(this.position, user.position);
       let volume = p.map(distUser.mag(), audibleDist, 40, 0, ampMax);
@@ -515,6 +518,8 @@ canvas1 = p => {
         // this.acceleration.y = this.acceleration.y*-1;
       }
     }
+
+
 
   }
   //----- Raya class end -----
