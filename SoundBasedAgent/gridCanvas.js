@@ -52,25 +52,27 @@ let sittingFrame = 0;
 let buyDrinkFrame = 0;
 
 
+//p5.serialport relevant
+let serial;
+let outData = 0; // for data output
+let portName = '/dev/tty.usbmodem14401';  // fill in your serial port name here
+
+
 //----- Grid canvas -----
 canvas1 = p => {
   p.preload = () => {
     for(let i=0; i < 20; i++){
       walkSound[i] = p.loadSound("/soundEffects/walkSoundSmall/walk"+i+".mp3");
     }
-
     for(let i=0; i < 4; i++){
       coughSound[i] = p.loadSound("/soundEffects/coughSound/cough"+i+".mp3");
     }
-
     for(let i=0; i < 5; i++){
       flipPageSound[i] = p.loadSound("/soundEffects/flipPage/flip"+i+".mp3");
     }
-
     for(let i=0; i < 5; i++){
       buyDrink[i] = p.loadSound("/soundEffects/vendingMachine/buyDrink"+i+".mp3");
     }
-
     for(let i=0; i < 4; i++){
       laughingSound[i] = p.loadSound("/soundEffects/laughingSound/laugh"+i+".mp3");
     }
@@ -152,6 +154,18 @@ canvas1 = p => {
 
     }, 200);
 
+    //p5.serialport relevant
+    serial = new p5.SerialPort();
+
+    serial.on('list', p.printList);  // set a callback function for the serialport list event
+    serial.on('connected', p.serverConnected); // callback for connecting to the server
+    serial.on('open', p.portOpen);        // callback for the port opening
+    serial.on('data', p.serialEvent);     // callback for when new data arrives
+    serial.on('error', p.serialError);    // callback for errors
+    serial.on('close', p.portClose);      // callback for the port closing
+
+    serial.list();                      // list the serial ports
+    serial.open(portName);              // open a serial port
   }
 
   p.mousePressed = () => {
@@ -166,7 +180,7 @@ canvas1 = p => {
     p.background(31, 52, 97);//apricot
     // p.clear();
 
-    //First we need set environment.
+    //First we need to set environment.
     grid.grid();
     topWall.wall(0, 0, p.width-40, 20);
     bottomWall.wall(0, p.height-20, p.width-40, 20);
@@ -180,6 +194,25 @@ canvas1 = p => {
 
     //Next we set user existance.
     user.appear();
+    user.move();
+    user.stop();
+    user.turn(60+rayaRadius, 60+rayaRadius, 20+rayaRadius, 20+rayaRadius);
+    if (p.keyIsDown(p.LEFT_ARROW)) {
+      let move = p.createVector(-0.5, 0);
+      user.applyForce(move);
+    }
+    if (p.keyIsDown(p.RIGHT_ARROW)) {
+      let move = p.createVector(0.5, 0);
+      user.applyForce(move);
+    }
+    if (p.keyIsDown(p.UP_ARROW)) {
+      let move = p.createVector(0, -0.5);
+      user.applyForce(move);
+    }
+    if (p.keyIsDown(p.DOWN_ARROW)) {
+      let move = p.createVector(0, 0.5);
+      user.applyForce(move);
+    }
 
 
     //then we design the agent behavior along with all above.
@@ -255,9 +288,46 @@ canvas1 = p => {
       }
     }
     // p.print(p.frameRate());
+
+
+    //Lastly, we give Raya's x value to Arduino
+    let val = p.map(raya.position.x, 75, p.width-75, 0, 255);
+    console.log(val);
+    outData = val;  // setup the serial output
+    serial.write(outData); // write to serial for Arduino to pickup
+
   }
   //-----------------------------------------------------//
   //----- This is the place all interactions happen -----//
+
+
+  p.printList = (portList) => {
+   // portList is an array of serial port names
+   for (var i = 0; i < portList.length; i++) {
+   // Display the list the console:
+    console.log(i + " " + portList[i]);
+   }
+  }
+
+  p.serverConnected = () => {
+    console.log('connected to server.');
+  }
+
+  p.portOpen = () => {
+    console.log('the serial port opened.')
+  }
+
+  p.serialEvent = () => {
+    inData = Number(serial.read());
+  }
+
+  p.serialError = (err) => {
+    console.log('Something went wrong with the serial port. ' + err);
+  }
+
+  p.portClose = () => {
+    console.log('The serial port closed.');
+  }
 
 
   class Agent{
@@ -447,7 +517,7 @@ canvas1 = p => {
         }
     }
 
-    largh(possibilityRange, border, mode){
+    laugh(possibilityRange, border, mode){
       let num = p.random(0, possibilityRange);
       if(num > border){
         let index = p.int(p.random(0, laughingSound.length));
@@ -473,7 +543,7 @@ canvas1 = p => {
       this.position = p.createVector(p.width/2, p.height*3/4);
       this.velocity = p.createVector();
       this.acceleration = p.createVector(0, 0);
-      this.maxspeed = 1;
+      this.maxspeed = 0.5;
       this.maxforce = 0.025;
 
     }
@@ -517,6 +587,13 @@ canvas1 = p => {
         this.velocity.y = this.velocity.y*-1;
         // this.acceleration.y = this.acceleration.y*-1;
       }
+    }
+
+    stop(){
+      //friction simuration.
+      let friction = this.velocity.copy();
+      friction.mult(-0.05);
+      this.applyForce(friction);
     }
 
 

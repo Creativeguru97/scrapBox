@@ -30,6 +30,8 @@ navigator.mediaDevices.getUserMedia({video:{width: 720, height: 405}})
 })
 .catch((err) => { console.log(err.name + ": " + err.message); });
 
+
+
 video.addEventListener("play", () => {
   //create face api canvas !
   faceAPICanvas = faceapi.createCanvasFromMedia(video)
