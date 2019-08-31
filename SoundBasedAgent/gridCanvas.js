@@ -168,10 +168,10 @@ canvas1 = p => {
     serial.open(portName);              // open a serial port
   }
 
-  p.mousePressed = () => {
-    let psychoKinesis = p.createVector(0, -50);
-    raya.applyForce(psychoKinesis);
-  }
+  // p.mousePressed = () => {
+  //   let psychoKinesis = p.createVector(0, -50);
+  //   raya.applyForce(psychoKinesis);
+  // }
 
 
 //----- This is the place all interactions happen -----//
@@ -238,14 +238,16 @@ canvas1 = p => {
       isAttractedByUser = true;
       waitingTime = 0;
 
-    }else if(angerLevel > 10 || microphone.getLevel()*600 > 200){
+    }else{
+      isAttractedByUser = false;
+    }
+
+    if(angerLevel > 10 || microphone.getLevel()*600 > 200){
       if(distUser.mag() < 150){
-        raya.leave(toUser, 50);
+        raya.leave(toUser);
       }
       isAttractedByUser = false;
       waitingTime = 0;
-    }else{
-      isAttractedByUser = false;
     }
 
     if(distUser.mag() <= 70){//If raya is closer than 70px
@@ -290,9 +292,9 @@ canvas1 = p => {
     // p.print(p.frameRate());
 
 
-    //Lastly, we give Raya's x value to Arduino
-    let val = p.map(raya.position.x, 75, p.width-75, 0, 255);
-    console.log(val);
+    //Lastly, we give Raya's x value to Servo
+    let val = p.map(raya.position.x, 75, p.width-75, 20, 160);
+    // console.log(val);
     outData = val;  // setup the serial output
     serial.write(outData); // write to serial for Arduino to pickup
 
@@ -407,13 +409,13 @@ canvas1 = p => {
       this.applyForce(friction);
     }
 
-    leave(target, redZone){
+    leave(target){
       let desired = p5.Vector.sub(target, this.position);
       desired.mult(-1);
       desired.setMag(this.maxspeed);
 
       let steer = p5.Vector.sub(desired, this.velocity);
-      steer.limit(this.maxforce);  // Limit to maximum steering force
+      steer.limit(this.maxforce*1.5);  // Limit to maximum steering force
       this.applyForce(steer);
       this.walk(30, 'sustain');
     }
