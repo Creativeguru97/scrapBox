@@ -45,6 +45,7 @@ let timeLoop;
 let timeWait;
 let loopTime = 0;//60 seconds loop
 let waitingTime = 0;
+let okIgottaGo = 30;//The timing agent get into loop between bookshelf and vendingMachine
 
 let walkFrame = 0;
 let breathFrame = 0;
@@ -243,11 +244,11 @@ canvas1 = p => {
     }
 
     if(angerLevel > 10 || microphone.getLevel()*600 > 200){
-      if(distUser.mag() < 150){
+      if(distUser.mag() < 120){
         raya.leave(toUser);
       }
       isAttractedByUser = false;
-      waitingTime = 0;
+      waitingTime = okIgottaGo - 2 ;//Means agent get into the loop 2 seconds later
     }
 
     if(distUser.mag() <= 70){//If raya is closer than 70px
@@ -272,7 +273,7 @@ canvas1 = p => {
     }
 
     //Loop between book shelf and vending machine.
-    if(isAttractedByUser == false && waitingTime > 30){
+    if(isAttractedByUser == false && waitingTime > okIgottaGo){
       if (loopTime < 90){
         if(distBookShelf.mag() > 45){
           raya.attracted(toBookShelf, 40);
