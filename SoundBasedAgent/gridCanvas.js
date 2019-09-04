@@ -63,7 +63,8 @@ let portName = '/dev/tty.usbmodem14401';  // fill in your serial port name here
 canvas1 = p => {
   p.preload = () => {
     for(let i=0; i < 20; i++){
-      walkSound[i] = p.loadSound("/soundEffects/walkSoundSmall/walk"+i+".mp3");
+      // walkSound[i] = p.loadSound("/soundEffects/walkSoundSmall/walk"+i+".mp3");
+      walkSound[i] = p.loadSound("/soundEffects/walkSound/walk"+i+".mp3");
     }
     for(let i=0; i < 4; i++){
       coughSound[i] = p.loadSound("/soundEffects/coughSound/cough"+i+".mp3");
@@ -426,7 +427,8 @@ canvas1 = p => {
       //This takes a lot of resouces I guess, may be I use int here.
       let panning = p.map(this.position.x, 0, p.width,-1.0, 1.0);
       let distUser = p5.Vector.sub(this.position, user.position);
-      let volume = p.map(distUser.mag(), audibleDist, 40, 0, ampMax);
+      // let volume = p.map(distUser.mag(), audibleDist, 40, 0, ampMax);
+      let volume = p.map(distUser.mag(), audibleDist, 40, 0.3, ampMax);
       if(index == 'null'){
         soundFile.pan(panning);
         soundFile.setVolume(volume);
@@ -441,7 +443,8 @@ canvas1 = p => {
       if(walkFrame == interval){
         let index = p.int(p.random(0, walkSound.length));
         walkSound[index].playMode(mode);
-        this.soundDirection(walkSound, index, p.width/2, 0.05);
+        // this.soundDirection(walkSound, index, p.width/2, 0.05);
+        this.soundDirection(walkSound, index, p.width/2, 2.0);
         walkSound[index].play();
         walkFrame = 0;
       }
@@ -452,7 +455,8 @@ canvas1 = p => {
       if(num > border){
         let index = p.int(p.random(0, coughSound.length));
         coughSound[index].playMode(mode);
-        this.soundDirection(coughSound, index, p.width/2, 0.04);
+        // this.soundDirection(coughSound, index, p.width/2, 0.04);
+        this.soundDirection(coughSound, index, p.width/2, 0.8);
         coughSound[index].play();
       }
     }
@@ -462,7 +466,7 @@ canvas1 = p => {
       breathFrame++;
       if(breathFrame == interval){
         breathSound.playMode(mode);
-        breathSound.setVolume(0.08);
+        breathSound.setVolume(0.5);
         breathSound.play();
         breathFrame = 0;
       }
@@ -474,9 +478,11 @@ canvas1 = p => {
         let index = p.int(p.random(0, flipPageSound.length));
         flipPageSound[index].playMode(mode);
         if(distUser.mag() <= 70){
-          flipPageSound[index].setVolume(0.05);
+          // flipPageSound[index].setVolume(0.05);
+          flipPageSound[index].setVolume(0.5);
         }else{
-          this.soundDirection(flipPageSound, index, p.width/2, 0.05);
+          // this.soundDirection(flipPageSound, index, p.width/2, 0.05);
+          this.soundDirection(flipPageSound, index, p.width/2, 1.5);
         }
         flipPageSound[index].play();
       }
@@ -484,18 +490,21 @@ canvas1 = p => {
 
     sitDown(mode){
       sitOnChairSound.playMode(mode);
-      sitOnChairSound.setVolume(0.01);
+      // sitOnChairSound.setVolume(0.01);
+      sitOnChairSound.setVolume(0.5);
       sitOnChairSound.play();
     }
 
     putCupAndBookOnTable(countFrame, num1, num2, mode){
       if(countFrame == num1){
         putACupSound.playMode(mode);
-        putACupSound.setVolume(0.05);
+        // putACupSound.setVolume(0.05);
+        putACupSound.setVolume(1.0);
         putACupSound.play();
       }else if(countFrame == num2){
         putABookSound.playMode(mode);
-        putABookSound.setVolume(0.05);
+        // putABookSound.setVolume(0.05);
+        putABookSound.setVolume(1.0);
         putABookSound.play();
       }
     }
@@ -503,19 +512,23 @@ canvas1 = p => {
     buySomeDrink(countFrame, num1, num2, num3, num4, mode){
         if(countFrame == num1){
           buyDrink[1].playMode(mode);
-          this.soundDirection(buyDrink, 1, p.width/2, 0.05);
+          // this.soundDirection(buyDrink, 1, p.width/2, 0.05);
+          this.soundDirection(buyDrink, 1, p.width/2, 2.0);
           buyDrink[1].play();
         }else if(countFrame == num2+180){
           buyDrink[2].playMode(mode);
-          this.soundDirection(buyDrink, 2, p.width/2, 0.08);
+          // this.soundDirection(buyDrink, 2, p.width/2, 0.08);
+          this.soundDirection(buyDrink, 2, p.width/2, 2.0);
           buyDrink[2].play();
         }else if(countFrame == num3+180){
           buyDrink[3].playMode(mode);
-          this.soundDirection(buyDrink, 3, p.width/2, 0.05);
+          // this.soundDirection(buyDrink, 3, p.width/2, 0.05);
+          this.soundDirection(buyDrink, 3, p.width/2, 2.0);
           buyDrink[3].play();
         }else if(countFrame == num4+180){
           buyDrink[4].playMode(mode);
-          this.soundDirection(buyDrink, 4, p.width/2, 0.08);
+          // this.soundDirection(buyDrink, 4, p.width/2, 0.08);
+          this.soundDirection(buyDrink, 4, p.width/2, 2.0);
           buyDrink[4].play();
         }
     }
@@ -525,7 +538,8 @@ canvas1 = p => {
       if(num > border){
         let index = p.int(p.random(0, laughingSound.length));
         laughingSound[index].playMode(mode);
-        this.soundDirection(laughingSound, index, p.width/2, 0.04);
+        // this.soundDirection(laughingSound, index, p.width/2, 0.04);
+        this.soundDirection(laughingSound, index, p.width/2, 0.5);
         laughingSound[index].play();
       }
     }
