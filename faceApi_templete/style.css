@@ -1,0 +1,39 @@
+body {
+  background-color: #000;
+  /* background-color: #9fc24d; */
+  /*leaf green*/
+/*
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight:100; */
+}
+
+#video{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index:-1;
+  border: 3px #fff solid;
+	border-radius: 10px;
+}
+
+#faceAPICanvas{
+  position: absolute;
+  z-index:0;
+}
+
+#hudCanvas{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index:1;
+}
+
+#agentCanvas{
+  position: absolute; /*Reletive from the video div*/
+  top: 390px;
+  left: 10px;
+  z-index:2;
+
+  border: 3px #fff solid;
+  border-radius: 10px;
+}

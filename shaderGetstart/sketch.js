@@ -55,11 +55,11 @@ function windowResized() {
 
 function draw(){
   perspective(PI / 3.0, width / height, 1, 50000);
-  // orbitControl(4, 4);//Mouse control
+  orbitControl(4, 4);//Mouse control
   background(15);
 
-  cameraY = map(mouseY, 0, height, -1200, 0);
-  camera(0, -200, (height/2.0) / tan(PI*30.0 / 180.0), 0, cameraY, 0, 0, 1, 0);
+  // cameraY = map(mouseY, 0, height, -1200, 0);
+  // camera(0, -200, (height/2.0) / tan(PI*30.0 / 180.0), 0, cameraY, 0, 0, 1, 0);
 
   // rotationValueX = map(mouseY, 0, height, PI/3, -PI/2);
   rotateX(rotationValueX+PI);
